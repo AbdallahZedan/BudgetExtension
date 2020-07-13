@@ -1,0 +1,59 @@
+<mvc:View controllerName="ExtensionApproval.ExtensionApproval.controller.Master" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
+	xmlns="sap.m" xmlns:semantic="sap.m.semantic">
+	<semantic:MasterPage id="page" title="{masterView>/title}" navButtonPress="onNavBack" showNavButton="true">
+		<semantic:multiSelectAction>
+			<semantic:MultiSelectAction id="multiSelectButton" press="onMultiSelectPressed"/>
+		</semantic:multiSelectAction>
+		<semantic:subHeader>
+			<Bar id="headerBar">
+				<!--<contentMiddle>-->
+				<!--	<SearchField id="searchField" showRefreshButton="{= !${device>/support/touch} }" tooltip="{i18n>masterSearchTooltip}" width="100%"-->
+				<!--		search="onSearch"></SearchField>-->
+				<!--</contentMiddle>-->
+			</Bar>
+		</semantic:subHeader>
+		<semantic:content>
+			<PullToRefresh id="pullToRefresh" visible="{device>/support/touch}" refresh="onRefresh"/>
+			<!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}" -->
+			<List id="list"
+				items="{inboxModel>/results}"
+				busyIndicatorDelay="{masterView>/delay}" noDataText="{masterView>/noDataText}" growing="true" growingScrollToLoad="true"
+				mode="SingleSelectMaster" includeItemInSelection="false" updateFinished="onUpdateFinished" selectionChange="onSelectionChange"
+				itemPress="onItemPress">
+				<!--<infoToolbar>-->
+				<!--	<Toolbar active="true" id="filterBar" visible="{masterView>/isFilterBarVisible}" press="onOpenViewSettings">-->
+				<!--		<Title id="filterBarLabel" text="{masterView>/filterBarLabel}"/>-->
+				<!--	</Toolbar>-->
+				<!--</infoToolbar>-->
+				<items>
+					<ObjectListItem press="onSelectionChange" title="{inboxModel>RequestId}" number="{ path: 'inboxModel>Amount', formatter: '.formatter.currencyValue' }"
+						numberUnit="{inboxModel>Curr}">
+						<firstStatus>
+							<ObjectStatus text="{inboxModel>Status}" state="{path: 'inboxModel>Status', formatter: '.formatter.status'}"/>
+						</firstStatus>
+						<attributes>
+							<ObjectAttribute text="{path:'inboxModel>CreationDate', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MM-yyyy' } }"/>
+							<ObjectAttribute title="{i18n>CreatedBy}" text="{inboxModel>CreatedBy}"/>
+							<ObjectAttribute text="{inboxModel>CompanyText}"/>
+						</attributes>
+					</ObjectListItem>
+				</items>
+			</List>
+		</semantic:content>
+		<semantic:sort>
+			<semantic:SortSelect id="sort" selectedKey="{masterView>/sortBy}" change="onSort">
+				<core:Item id="masterSort1" key="CreationDate" text="{i18n>masterSort1}"/>
+				<core:Item id="masterSort2" key="Amount" text="{i18n>masterSort2}"/>
+			</semantic:SortSelect>
+		</semantic:sort>
+		<semantic:filter>
+			<semantic:FilterAction id="filter" press="onOpenViewSettings"/>
+		</semantic:filter>
+		<semantic:negativeAction>
+			<semantic:NegativeAction id="idRejectAllButton" text="{i18n>RejectAll}" press="onPressConfirmAll" visible="false"/>
+		</semantic:negativeAction>
+		<semantic:positiveAction>
+			<semantic:PositiveAction id="idApproveAllButton" text="{i18n>ApproveAll}" press="onPressConfirmAll" visible="false"/>
+		</semantic:positiveAction>
+	</semantic:MasterPage>
+</mvc:View>

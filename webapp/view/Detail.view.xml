@@ -1,0 +1,152 @@
+<mvc:View controllerName="ExtensionApproval.ExtensionApproval.controller.Detail" xmlns="sap.m" xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc" xmlns:commons="sap.suite.ui.commons" xmlns:semantic="sap.m.semantic" xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form" xmlns:ux="sap.uxap" xmlns:footerbar="sap.ushell.ui.footerbar">
+	<semantic:DetailPage id="pageId" navButtonPress="onNavBack" showNavButton="{device>/system/phone}" title="{i18n>detailTitle}"
+		busy="{detailView>/busy}" busyIndicatorDelay="{detailView>/delay}">
+		<semantic:content id="contentId" updateFinished="onListUpdateFinished" busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+			<ux:ObjectPageLayout xmlns:layout="sap.ui.layout" xmlns:blockcolor="sap.uxap.sample.SharedBlocks" id="ObjectPageLayout"
+				enableLazyLoading="false" showAnchorBarPopover="false" height="100%" alwaysShowContentHeader="true">
+				<ux:headerContent>
+					<ObjectHeader title="{i18n>displayExtRequest} {workItemModel>/RequestId}"
+						number="{ parts: [ {path: 'Amount'}, {path: 'Curr'} ], formatter: '.formatter.roundAmount2' }" numberUnit="{Curr}" condensed="true"
+						responsive="true">
+						<attributes>
+							<ObjectAttribute title="{i18n>displayCreatedBy}" text="{workItemModel>/CreatedBy}"/>
+							<ObjectAttribute title="{i18n>CompanyName}" text="{workItemModel>/CompanyText}"/>
+							<ObjectAttribute title="{i18n>displayCreationDate}" text="{path: 'workItemModel>/CreationDate', formatter: '.formatter.formatDate'}"/>
+						</attributes>
+						<statuses>
+							<ObjectStatus id="objectStatusId" title="{i18n>displayStatus}"
+								text="{= ${workItemModel>/Status} === 'APPROVED'?'APPROVED/PENDING': ${workItemModel>/Status}}"
+								state="{path:'workItemModel>/Status', formatter: '.formatter.status' }"/>
+						</statuses>
+					</ObjectHeader>
+				</ux:headerContent>
+				<ux:sections>
+					<ux:ObjectPageSection title="{i18n>displayOverview}">
+						<ux:subSections>
+							<ux:ObjectPageSubSection>
+								<HBox class="sapUiSmallMargin">
+									<f:SimpleForm id="idDisplayForm" visible="{= ${overviewModel>/allocationDetails} !== undefined }" editable="false"
+										layout="ResponsiveGridLayout" labelSpanXL="6" labelSpanL="6" labelSpanM="6" labelSpanS="6" adjustLabelSpan="false" emptySpanXL="0"
+										emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2" singleContainerFullSize="false">
+										<f:content>
+											<core:Title text="{i18n>extensionTitle}"/>
+											<Label text="{i18n>displayExtBdgbeforeRequest}" class="sapUiTinyMarginTop"/>
+											<Input id="extendedBDGLabelId"
+												value="{ parts: [ {path: 'overviewModel>/allocationDetails/ExtendedBdg'}, {path: 'overviewModel>/allocationDetails/Currency'} ], formatter: '.formatter.roundAmount' }"
+												textAlign="Center" editable="false"/>
+											<Label text="{i18n>displayOrgBdg}" class="sapUiTinyMarginTop"/>
+											<Input id="originalBdgLabelId"
+												value="{ parts: [ {path: 'overviewModel>/allocationDetails/OriginalBdg'}, {path: 'overviewModel>/allocationDetails/Currency'} ], formatter: '.formatter.roundAmount' }"
+												textAlign="Center" editable="false"/>
+											<Label text="{i18n>displayRemBdg}" class="sapUiTinyMarginTop"/>
+											<Input id="remaninBdgLabelId"
+												value="{ parts: [ {path: 'overviewModel>/allocationDetails/RemaningBdg'}, {path: 'overviewModel>/allocationDetails/Currency'} ], formatter: '.formatter.roundAmount' }"
+												textAlign="Center" editable="false"/>
+											<Label text="{i18n>displayBdgMonth}" class="sapUiTinyMarginTop"/>
+											<Input id="monthLabelId"
+												value="{ parts: [ {path: 'overviewModel>/allocationDetails/BdgMonth'}, {path: 'overviewModel>/allocationDetails/BdgYear'} ] , formatter: '.formatter.concatMonthYear'}"
+												editable="false" textAlign="Center"/>
+											<Label text="{i18n>displayBdgCreatedBy}" class="sapUiTinyMarginTop"/>
+											<Input id="userLabelId"
+												value="{ parts: [ 'overviewModel>/allocationDetails/UserId', 'i18n>oneWord' ], formatter: '.formatter.captalizeFirstChar' }"
+												textAlign="Center" editable="false"/>
+											<Label text="{i18n>displayDNType}" class="sapUiTinyMarginTop"/>
+											<Input id="dnTypeLabelId" value="{ path: 'overviewModel>/allocationDetails/DnType', formatter: '.formatter.captalizeFirstChar' }"
+												textAlign="Center" editable="false"/>
+											<Label text="{i18n>displayBrand}" class="sapUiTinyMarginTop"/>
+											<Input id="brandLabelId" value="{ path: 'overviewModel>/allocationDetails/Brand', formatter: '.formatter.captalizeFirstChar' }"
+												textAlign="Center" editable="false"/>
+											<Label text="{i18n>displaySalesChannel}" class="sapUiTinyMarginTop"/>
+											<Input id="salesKeyLabelId" value="{ path: 'overviewModel>/allocationDetails/SalesDesc', formatter: '.formatter.captalizeFirstChar' }"
+												textAlign="Center" editable="false"/>
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm id="idDisplayForm2" visible="{= ${overviewModel>/ExtAmount} !== undefined }" editable="false" layout="ResponsiveGridLayout"
+										labelSpanXL="6" labelSpanL="6" labelSpanM="6" labelSpanS="6" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0"
+										emptySpanS="0" columnsXL="2" columnsL="2" columnsM="2" singleContainerFullSize="false" class="sapUiSmallMarginBegin">
+										<f:content>
+											<core:Title text="{i18n>extensionReqTitle}"/>
+											<Label text="{i18n>displayExtBdgRequest}" class="sapUiTinyMarginTop"/>
+											<Input id="extReqInputId"
+												value="{ parts: [ {path: 'overviewModel>/ExtAmount'}, {path: 'overviewModel>/Curr'} ], formatter: '.formatter.roundAmount' }"
+												textAlign="Center" editable="false"/>
+											<Label text="{i18n>displayExtCreatedBy}" class="sapUiTinyMarginTop"/>
+											<Input id="extCreatedByInputId" value="{ parts: [ 'overviewModel>/UserId', 'i18n>oneWord' ], formatter: '.formatter.captalizeFirstChar' }"
+												textAlign="Center" editable="false"/>
+											<Label text="{i18n>displayExtDate}" class="sapUiTinyMarginTop"/>
+											<Input id="extCreationDateInputId"
+												value="{ path: 'overviewModel>/ExtDate', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MM-yyyy' } }" textAlign="Center"
+												editable="false"/>
+											<Label text="{i18n>displayExtStatus}" class="sapUiTinyMarginTop"/>
+											<ObjectStatus id="objectStatusId1" text="{workItemModel>/Status}" state="{= ${workItemModel>/Status} === 'APPROVED' ? 'Success' : 'Error' }"
+												class="sapUiTinyMarginTop"/>
+										</f:content>
+									</f:SimpleForm>
+								</HBox>
+							</ux:ObjectPageSubSection>
+						</ux:subSections>
+					</ux:ObjectPageSection>
+					<ux:ObjectPageSection title="{i18n>ProcessFlow}" visible="true" icon="sap-icon://step">
+						<!--<ux:ObjectPageSection title="{i18n>displayMaterials}" visible="{path:'DnoteType',&nbsp;
+              formatter: '.formatter.checkVisibility'}"> -->
+						<ux:subSections>
+							<ux:ObjectPageSubSection id="IdProcessFlowIconTabFilter"></ux:ObjectPageSubSection>
+						</ux:subSections>
+					</ux:ObjectPageSection>
+					<ux:ObjectPageSection title="{i18n>displayProcessFlow}" visible="true">
+						<!--icon="sap-icon://step" -->
+						<ux:subSections>
+							<ux:ObjectPageSubSection id="processFlowId">
+								<!--<l:VerticalLayout class="sapUiContentPadding" width="100%">-->
+								<!--	<l:content>-->
+								<!--		<List items="{viewModel>/SummaryCollection}">-->
+								<!--			<FeedListItem sender="{viewModel>DecisionBy}" icon="sap-icon://person-placeholder" iconDensityAware="false"-->
+								<!--				info="ver.{viewModel>Version} - {path:'viewModel>StepNo',formatter:'.formatter.getProcessFlowIntro'} - {viewModel>Status}"-->
+								<!--				timestamp="{parts:['viewModel>DecisionDate','viewModel>DecisionTime'],formatter:'.formatter.formatDateTime'}" text="{viewModel>Comments}"/>-->
+								<!--		</List>-->
+								<!--	</l:content>-->
+								<!--</l:VerticalLayout>-->
+								<commons:ProcessFlow scrollable="false" foldedCorners="true" nodePress="onNodePress" nodes="{workItemModel>/nodes}"
+									lanes="{workItemModel>/lanes}">
+									<commons:nodes>
+										<commons:ProcessFlowNode laneId="{workItemModel>laneId}" nodeId="{workItemModel>nodeId}" title="{workItemModel>title}"
+											titleAbbreviation="{workItemModel>titleAbbreviation}" children="{workItemModel>children}" state="{workItemModel>state}"
+											stateText="{workItemModel>stateText}" texts="{workItemModel>texts}" highlighted="{workItemModel>highlighted}"/>
+									</commons:nodes>
+									<commons:lanes>
+										<commons:ProcessFlowLaneHeader laneId="{workItemModel>laneId}" state="{workItemModel>state}" iconSrc="{workItemModel>iconSrc}"
+											text="{workItemModel>text}" position="{workItemModel>position}"/>
+									</commons:lanes>
+								</commons:ProcessFlow>
+							</ux:ObjectPageSubSection>
+						</ux:subSections>
+					</ux:ObjectPageSection>
+					<ux:ObjectPageSection title="{i18n>displayFlowSummary}" visible="true">
+						<!--icon="sap-icon://step" -->
+						<ux:subSections>
+							<ux:ObjectPageSubSection id="flowSummaryId">
+								<l:VerticalLayout class="sapUiContentPadding" width="100%">
+									<l:content>
+										<List items="{workItemModel>/flowSummary}">
+											<FeedListItem sender="{workItemModel>DecisionBy}" icon="sap-icon://person-placeholder" iconDensityAware="false"
+												info="{path:'workItemModel>StepNo',formatter:'.formatter.getProcessFlowIntro'} - {workItemModel>Status}"
+												timestamp="{parts:['workItemModel>DecisionDate','workItemModel>DecisionTime'],formatter:'.formatter.formatDateTime'}" text="{workItemModel>Comments}"/>
+										</List>
+									</l:content>
+								</l:VerticalLayout>
+							</ux:ObjectPageSubSection>
+						</ux:subSections>
+					</ux:ObjectPageSection>
+				</ux:sections>
+			</ux:ObjectPageLayout>
+		</semantic:content>
+		<semantic:customFooterContent>
+			<Button icon="sap-icon://accept" enabled="{= ${workItemModel>/Status} !== 'APPROVED' &amp;&amp; ${workItemModel>/Status} !== 'REJECTED' }"
+				type="Accept" press="onConfirmPress" id="IdInboxAcceptButton"/>
+			<Button icon="sap-icon://decline" enabled="{= ${workItemModel>/Status} !== 'APPROVED' &amp;&amp; ${workItemModel>/Status} !== 'REJECTED' }"
+				type="Reject" press="onConfirmPress" id="IdInboxRejectButton"/>
+		</semantic:customFooterContent>
+	</semantic:DetailPage>
+</mvc:View>

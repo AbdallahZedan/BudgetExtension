@@ -1,0 +1,83 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog class="sapUiSizeCompact" title="{i18n>FilterDialog}" busy="{configurationModel>/busyIndicatorFlag}">
+		<content>
+			<f:Form maxContainerCols="2" editable="true">
+				<f:layout>
+					<f:ResponsiveGridLayout labelSpanL="3" labelSpanM="0" emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2"/>
+				</f:layout>
+				<f:formContainers>
+					<f:FormContainer>
+						<f:formElements>
+							<f:FormElement>
+								<f:label>
+									<Label text="{i18n>DNFilter}"/>
+								</f:label>
+								<!--<Label text="{i18n>DNType}"/>-->
+								<f:fields>
+									<ComboBox id="DNTypeComboBoxId" items="{filterModel>/DNTypes}" selectedKey="{filterModel>/SelectedDnType}">
+										<core:ListItem key="{filterModel>DnType}" text="{filterModel>DnType}"/>
+									</ComboBox>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement>
+								<f:label>
+									<Label text="{i18n>brand}"/>
+								</f:label>
+								<f:fields>
+									<ComboBox id="brandComboBoxId" items="{filterModel>/Brands}" selectedKey="{filterModel>/SelectedBrand}">
+										<core:ListItem key="{filterModel>Brand}" text="{filterModel>Brand}"/>
+									</ComboBox>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement>
+								<f:label>
+									<Label text="{i18n>createdFrom}"/>
+								</f:label>
+								<f:fields>
+									<DatePicker id="createdFromPickeId" displayFormat="MM-yyyy" value="{filterModel>/CreatedFrom}" class="sapUiSmallMarginBottom"/>
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+					<f:FormContainer>
+						<f:formElements>
+							<f:FormElement>
+								<f:label>
+									<Label text="{i18n>salesChannelFilter}"/>
+								</f:label>
+								<f:fields>
+									<ComboBox id="salesChannelComboBoxId" items="{filterModel>/SalesChannels}" selectedKey="{filterModel>/SelectedSalesChannel}">
+										<core:ListItem key="{filterModel>SalesDesc}" text="{filterModel>SalesDesc}"/>
+									</ComboBox>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement id="FilterBarItem3">
+								<f:label>
+									<Label text="{i18n>UID}"/>
+								</f:label>
+								<f:fields>
+									<Input id="userInputId" type="Text" value="{filterModel>/UserId}"/>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement>
+								<f:label>
+									<Label text="{i18n>createdTo}"/>
+								</f:label>
+								<f:fields>
+									<!--<DateRangeSelection id="createdOnRangeId" displayFormat="MM/yyyy" change="onCreationDateChange"/>-->
+									<DatePicker id="createdToPickeId" displayFormat="MM-y" value="{filterModel>/CreatedTo}" class="sapUiSmallMarginBottom"/>
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+				</f:formContainers>
+			</f:Form>
+		</content>
+		<buttons>
+			<Button icon="sap-icon://decline" type="Reject" tooltip="{i18n>Cancel}" press="onCancelFilter"/>
+			<Button icon="sap-icon://clear-filter" tooltip="{i18n>ClearFilter}" press="onClearFilter"/>
+			<Button icon="sap-icon://filter" type="Emphasized" tooltip="{i18n>ApplyFilter}" press="onApplyFilter"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,96 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:commons="sap.suite.ui.commons">
+	<Dialog id="budgetHistoryDialogId" title="{i18n>DisplayExtTitle}" contentHeight="40%" contentWidth="60%">
+		<NavContainer id="navCon">
+			<Page id="master" class="sapUiResponsivePadding--header">
+				<Table busy="{configurationModel>/busyIndicatorFlag}" id="extensionTableId" class="sapUiResponsiveMargin" noDataText="{i18n>noExtData}"
+					width="auto" items="{extensionModel>/results}">
+					<columns>
+						<Column width="6%">
+							<Text text="{i18n>LineID}"/>
+						</Column>
+						<Column width="10%">
+							<Text text="{i18n>UID}"/>
+						</Column>
+						<Column width="15%">
+							<Text text="{i18n>ExtAmount}"/>
+						</Column>
+						<Column width="15%">
+							<Text text="{i18n>remBdg}"/>
+						</Column>
+						<Column width="10%">
+							<Text text="{i18n>ExtStatus}"/>
+						</Column>
+						<Column width="15%">
+							<Text text="{i18n>dateBdg}"/>
+						</Column>
+						<Column width="12%">
+							<Text text="{i18n>timeBdg}"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem type="Active" press="onNavToProcessFlow">
+							<cells>
+								<Text text="{ path: 'extensionModel>LineId', formatter: '.formatter.leftShiftZeros' }"/>
+								<Text text="{ parts: [ 'extensionModel>UserId', 'i18n>oneWord' ], formatter: '.formatter.captalizeFirstChar' }"/>
+								<ObjectNumber number="{ parts: [ {path: 'extensionModel>ExtAmount'}, {path: 'extensionModel>Curr'} ], formatter: '.formatter.roundAmount' }"
+									unit="{extensionModel>Curr}"/>
+								<ObjectNumber number="{ parts: [ {path: 'extensionModel>RemAmount'}, {path: 'extensionModel>Curr'} ], formatter: '.formatter.roundAmount' }"
+									unit="{extensionModel>Curr}"/>
+								<ObjectStatus text="{ path: 'extensionModel>ExtStatus', formatter: '.formatter.captalizeFirstChar'}"
+									state="{ path: 'extensionModel>ExtStatus', formatter: '.formatter.status' }"/>
+								<Text text="{ path: 'extensionModel>ExtDate', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MM-yyyy' } }"/>
+								<Text text="{ path: 'extensionModel>ExtTime', formatter: '.formatter.timeFormatter' }"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</Page>
+			<Page id="detail" class="sapUiResponsivePaddingheader" showNavButton="true" navButtonPress="onNavBack">
+				<!--<ScrollContainer height="100%" width="100%" horizontal="true" focusable="true">-->
+					<content>
+						<FlexBox alignItems="Center" justifyContent="Center">
+							<SegmentedButton id="flowSegmentButton" selectedKey="processFlow" select="onSelectionChange">
+								<items>
+									<SegmentedButtonItem text="{i18n>processFlow}" width="50%" key="processFlow"/>
+									<SegmentedButtonItem text="{i18n>flowSummary}" width="55%" key="flowSummary"/>
+								</items>
+							</SegmentedButton>
+						</FlexBox>
+						<Panel id="processFlowPanelId">
+							<HBox class="sapUiTinyMarginBegin" renderType="Bare">
+								<!--<VBox class="sapUiTinyMarginBegin">-->
+								<!--	<Button text="{i18n>displayZoomIn}" press="onZoomInPress" class="sapUiSmallMarginTop"/>-->
+								<!--	<Button text="{i18n>displatZoomOut}" press="onZoomOutPress" class="sapUiSmallMarginTop"/>-->
+								<!--</VBox>-->
+								<commons:ProcessFlow id="processFlow" scrollable="false" foldedCorners="true" nodes="{processFlowModel>/nodes}"
+									lanes="{processFlowModel>/lanes}">
+									<commons:nodes>
+										<commons:ProcessFlowNode laneId="{processFlowModel>laneId}" nodeId="{processFlowModel>nodeId}" title="{processFlowModel>title}"
+											titleAbbreviation="{processFlowModel>titleAbbreviation}" children="{processFlowModel>children}" state="{processFlowModel>state}"
+											stateText="{processFlowModel>stateText}" texts="{processFlowModel>texts}" highlighted="{processFlowModel>highlighted}"/>
+									</commons:nodes>
+									<commons:lanes>
+										<commons:ProcessFlowLaneHeader laneId="{processFlowModel>laneId}" state="{processFlowModel>state}" iconSrc="{processFlowModel>iconSrc}"
+											text="{processFlowModel>label}" position="{processFlowModel>position}"/>
+									</commons:lanes>
+								</commons:ProcessFlow>
+							</HBox>
+						</Panel>
+						<Panel id="flowSummaryPanelId" visible="false">
+						    	<!--info="{path:'processFlowModel>StepNo',formatter:'.formatter.getProcessFlowIntro'} - {processFlowModel>Status}"-->
+							<List items="{processFlowModel>/flowSummary}">
+								<FeedListItem sender="{processFlowModel>DecisionBy}" icon="sap-icon://person-placeholder" iconDensityAware="false"
+								info="{processFlowModel>StepPosition}"
+									timestamp="{parts:['processFlowModel>DecisionDate','processFlowModel>DecisionTime'],formatter:'.formatter.formatDateTime'}"
+									text="{processFlowModel>Comments}" noData="{i18n>noSummary}"/>
+							</List>
+						</Panel>
+					</content>
+					<!--</ScrollContainer>-->
+				</Page>
+			</NavContainer>
+			<endButton>
+				<Button icon="sap-icon://decline" press="onCloseDisplayDialog"/>
+			</endButton>
+		</Dialog>
+	</core:FragmentDefinition>

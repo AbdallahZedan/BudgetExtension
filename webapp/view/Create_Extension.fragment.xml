@@ -1,0 +1,20 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog id="budgetHistoryDialogId" busy="{configurationModel>/busyIndicatorFlag}" title="{i18n>CrExtTitle}" contentHeight="50%" contentWidth="30%">
+		<VBox width="100%" direction="Column" id="extVBoxId" class="sapUiTinyMarginBeginEnd sapUiResponsiveMargin">
+			<items>
+				<Label text="{i18n>origBdg}" id="origLabelId" width="100%" class="sapUiTinyMarginTopBottom"/>
+				<Input value="{ parts: [ {path: 'createExtModel>/OriginalBdg'}, {path: 'createExtModel>/Currency'} ], formatter: '.formatter.roundAmount' }" description="{createExtModel>/Currency}"  editable="false" id="origInputlId" width="100%"/>
+				<Label text="{i18n>remBdg}" id="remaningLabelId" width="100%" class="sapUiTinyMarginTopBottom"/>
+				<Input value="{ parts: [ {path: 'createExtModel>/RemaningBdg'}, {path: 'createExtModel>/Currency'} ], formatter: '.formatter.roundAmount' }" description="{createExtModel>/Currency}" editable="false" id="remaningInputlId" width="100%"/>
+				<Label text="{i18n>ExtAmount}" id="extLabelId" width="100%" class="sapUiTinyMarginTopBottom" design="Bold" required="true"/>
+				<Input value="{createExtModel>/ExtAmount}" description="{createExtModel>/Currency}" id="extAmountInputlId" width="100%"/>
+			</items>
+		</VBox>
+		<beginButton>
+			<Button type="Accept" press="onReleasePress" icon="sap-icon://accept"/>
+		</beginButton>
+		<endButton>
+			<Button type="Reject" press="onCloseCreateDialog" icon="sap-icon://decline"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

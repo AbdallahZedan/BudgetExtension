@@ -1,0 +1,16 @@
+<mvc:View
+		controllerName="ExtensionApproval.ExtensionApproval.controller.BaseController"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns="sap.m">
+
+	<MessagePage
+			id="page"
+			title="{i18n>welcome}"
+			text="{i18n>welcomeText}"
+			icon="sap-icon://monitor-payments"
+			description=""
+			showNavButton="{device>/system/phone}"
+			navButtonPress="onNavBack">
+	</MessagePage>
+
+</mvc:View>

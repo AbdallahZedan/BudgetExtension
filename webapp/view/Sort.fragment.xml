@@ -1,0 +1,9 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m">
+	<ViewSettingsDialog confirm="onSortConfirm" busy="{configurationModel>/busyIndicatorFlag}">
+		<sortItems>
+			<ViewSettingsItem selected="true" key="BdgMonth" text="{i18n>budgetMonth}"/>
+			<ViewSettingsItem key="DnType" text="{i18n>DNType}"/>
+			<ViewSettingsItem key="Brand" text="{i18n>brand}"/>
+		</sortItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>
