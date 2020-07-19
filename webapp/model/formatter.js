@@ -30,6 +30,9 @@ sap.ui.define(function() {
 		// round number dependant on currecy 
 		roundAmount: function(amount, currency) {
 
+            if (amount === "" || amount === undefined){
+                return "";
+            }
 			switch (currency) {
 				case "SAR":
 				case "USD":
@@ -133,6 +136,21 @@ sap.ui.define(function() {
 		// remove left zeros from string
 		leftShiftZeros: function(number) {
 			return parseInt(number);
+		},
+		
+		setStateText: function(oStateText) {
+			var state = "Success";
+			switch (oStateText) {
+				case this.getTextFromResourceBundle("Pending"):
+					state = "Warning";
+					break;
+				case this.getTextFromResourceBundle("Reject"):
+					state = "Error";
+					break;
+				default:
+					break;
+			}
+			return state;
 		}
 	};
 });

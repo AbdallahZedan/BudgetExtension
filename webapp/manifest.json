@@ -105,6 +105,27 @@
 					"clearAggregation": true,
 					"viewName": "Display",
 					"viewLevel": 1
+				},
+				"Target_Created_Ext": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewName": "Created_Extensions",
+					"viewLevel": 2
+				},
+				"Target_Create_Ext": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewName": "Create_Extension",
+					"viewLevel": 2
+				},
+				"Target_Ext_Details": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearAggregation": true,
+					"viewName": "Extension_Details",
+					"viewLevel": 3
 				}
 			},
 			"routes": [
@@ -115,6 +136,33 @@
 					"greedy": false,
 					"target": [
 						"Target_Display"
+					]
+				},
+				{
+					"name": "Route_Created_Ext",
+					"pattern": "/Extensions{BdgId}",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"Target_Created_Ext"
+					]
+				},
+				{
+					"name": "Route_Create_Ext",
+					"pattern": "/Create_Extension/{BdgId}",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"Target_Create_Ext"
+					]
+				},
+				{
+					"name": "Route_Ext_Details",
+					"pattern": "/Create_Extension/{BdgId}/{LineId}/{CreatedBy}",
+					"titleTarget": "",
+					"greedy": false,
+					"target": [
+						"Target_Ext_Details"
 					]
 				}
 			]
