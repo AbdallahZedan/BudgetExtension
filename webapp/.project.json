@@ -1,0 +1,20 @@
+{
+  "deploy": {
+    "destination": "MED",
+    "name": "/CICDEV/BDG_EXT"
+  },
+  "mockpreview": {
+    "mockUri": "",
+    "metadataFilePath": "",
+    "loadJSONFiles": false,
+    "loadCustomRequests": false,
+    "mockRequestsFilePath": ""
+  },
+  "generation": [
+    {
+      "templateId": "ui5template.basicSAPUI5ApplicationComponent",
+      "templateVersion": "1.4.0",
+      "dateTimeStamp": "Thu, 16 Jul 2020 14:31:36 GMT"
+    }
+  ]
+}

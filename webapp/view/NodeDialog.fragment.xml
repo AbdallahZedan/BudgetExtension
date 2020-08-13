@@ -1,0 +1,23 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:u="sap.ui.unified" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+    <Dialog class="sapUiSizeCompact" title="{extDetailsModel>title}">
+        <content>
+            <ObjectHeader
+                title="{extDetailsModel>role}"
+                intro="{extDetailsModel>titleAbbreviation}">
+                <statuses>
+                    <ObjectStatus
+                        text="{extDetailsModel>stateText}"
+                        state="{path:'extDetailsModel>stateText',formatter:'.formatter.setStateText'}" />
+                </statuses>
+                <attributes>
+                    <ObjectAttribute text="{extDetailsModel>texts/0}" />
+                    <ObjectAttribute text="{extDetailsModel>texts/1}" />
+                </attributes>
+            </ObjectHeader>
+        </content>
+        <buttons>
+            <Button icon="sap-icon://decline" tooltip="{i18n>closeButton}" press="onCloseProcessFlow" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

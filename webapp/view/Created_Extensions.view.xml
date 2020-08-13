@@ -1,0 +1,47 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="BudgetExtension.controller.Created_Extensions"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page id="master" class="sapUiResponsivePadding--header" showNavButton="true" navButtonPress="onNavBack">
+		<Table busy="{configurationModel>/busyIndicatorFlag}" id="extensionTableId" class="sapUiResponsiveMargin" noDataText="{i18n>noExtData}"
+			width="auto" items="{extensionModel>/results}" visible="{= ${extensionModel>/results} !== undefined }">
+			<columns>
+				<Column width="10%">
+					<Text text="{i18n>LineID}"/>
+				</Column>
+				<Column width="10%">
+					<Text text="{i18n>UID}"/>
+				</Column>
+				<Column width="15%">
+					<Text text="{i18n>ExtAmount}"/>
+				</Column>
+				<Column width="15%">
+					<Text text="{i18n>remBdg}"/>
+				</Column>
+				<Column width="10%">
+					<Text text="{i18n>ExtStatus}"/>
+				</Column>
+				<Column width="15%">
+					<Text text="{i18n>dateBdg}"/>
+				</Column>
+				<Column width="12%">
+					<Text text="{i18n>timeBdg}"/>
+				</Column>
+			</columns>
+			<items>
+				<ColumnListItem type="Active" press="onNavToExtDetail">
+					<cells>
+						<Text text="{ path: 'extensionModel>LineId', formatter: '.formatter.leftShiftZeros' }"/>
+						<Text text="{ parts: [ 'extensionModel>UserId', 'i18n>oneWord' ], formatter: '.formatter.captalizeFirstChar' }"/>
+						<ObjectNumber number="{ parts: [ {path: 'extensionModel>ExtAmount'}, {path: 'extensionModel>Curr'} ], formatter: '.formatter.roundAmount' }"
+							unit="{extensionModel>Curr}"/>
+						<ObjectNumber number="{ parts: [ {path: 'extensionModel>RemAmount'}, {path: 'extensionModel>Curr'} ], formatter: '.formatter.roundAmount' }"
+							unit="{extensionModel>Curr}"/>
+						<ObjectStatus text="{ path: 'extensionModel>ExtStatus', formatter: '.formatter.captalizeFirstChar'}"
+							state="{ path: 'extensionModel>ExtStatus', formatter: '.formatter.status' }"/>
+						<Text text="{ path: 'extensionModel>ExtDate', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MM-yyyy' } }"/>
+						<Text text="{ path: 'extensionModel>ExtTime', formatter: '.formatter.timeFormatter' }"/>
+					</cells>
+				</ColumnListItem>
+			</items>
+		</Table>
+	</Page>
+</mvc:View>

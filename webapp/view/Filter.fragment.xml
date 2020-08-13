@@ -4,7 +4,7 @@
 		<content>
 			<f:Form maxContainerCols="2" editable="true">
 				<f:layout>
-					<f:ResponsiveGridLayout labelSpanL="3" labelSpanM="0" emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2"/>
+					<f:ResponsiveGridLayout labelSpanL="6" labelSpanM="6" emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2"/>
 				</f:layout>
 				<f:formContainers>
 					<f:FormContainer>
@@ -32,10 +32,10 @@
 							</f:FormElement>
 							<f:FormElement>
 								<f:label>
-									<Label text="{i18n>createdFrom}"/>
+									<Label text="{i18n>fromMonthlyBudget}"/>
 								</f:label>
 								<f:fields>
-									<DatePicker id="createdFromPickeId" displayFormat="MM-yyyy" value="{filterModel>/CreatedFrom}" class="sapUiSmallMarginBottom"/>
+									<DatePicker id="createdFromPickeId" displayFormat="MM-yyyy" tooltip="{i18n>fromMonthlyBudget}" value="{filterModel>/CreatedFrom}" class="sapUiSmallMarginBottom"/>
 								</f:fields>
 							</f:FormElement>
 						</f:formElements>
@@ -54,10 +54,10 @@
 							</f:FormElement>
 							<f:FormElement id="FilterBarItem3">
 								<f:label>
-									<Label text="{i18n>UID}"/>
+									<Label text="{i18n>createdBy}"/>
 								</f:label>
 								<f:fields>
-									<Input id="userInputId" type="Text" value="{filterModel>/UserId}"/>
+									<Input id="userInputId" tooltip="{i18n>createdBy}" type="Text" value="{filterModel>/UserId}"/>
 								</f:fields>
 							</f:FormElement>
 							<f:FormElement>
@@ -66,7 +66,7 @@
 								</f:label>
 								<f:fields>
 									<!--<DateRangeSelection id="createdOnRangeId" displayFormat="MM/yyyy" change="onCreationDateChange"/>-->
-									<DatePicker id="createdToPickeId" displayFormat="MM-y" value="{filterModel>/CreatedTo}" class="sapUiSmallMarginBottom"/>
+									<DatePicker id="createdToPickeId" tooltip="{i18n>toMonthyBudget}" displayFormat="MM-yyyy" value="{filterModel>/CreatedTo}" class="sapUiSmallMarginBottom"/>
 								</f:fields>
 							</f:FormElement>
 						</f:formElements>

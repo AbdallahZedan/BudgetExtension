@@ -1,10 +1,15 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml" controllerName="BudgetExtension.controller.Display">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml"
+	controllerName="BudgetExtension.controller.Display">
 	<App>
 		<pages>
 			<Page busy="{configurationModel>/busyIndicatorFlag}">
 				<content>
-					<Table id="budgetTableId" visible="{= ${configurationModel>/role} !== 'NotAuthorized' }" noDataText="{i18n>noData}" items="{budgetModel>/results}" growing="true" class="">
+					<Table id="budgetTableId" visible="{= ${configurationModel>/role} !== 'NotAuthorized' }" noDataText="{i18n>noData}"
+						items="{budgetModel>/results}" growing="true" class="">
 						<columns>
+							<Column width="10%">
+								<Text text="{i18n>BdgId}"/>
+							</Column>
 							<Column width="15%">
 								<Text text="{i18n>CompName}"/></Column>
 							<Column width="10%">
@@ -37,18 +42,34 @@
 						</columns>
 						<items>
 							<ColumnListItem>
+							    <Text id="BdgIdTextId" text="{budgetModel>BdgId}" textAlign="Center" class="sapUiSmallMarginTop"/>
 								<Text id="compCodeLabelId" text="{budgetModel>CompanyName}" textAlign="Center" class="sapUiSmallMarginTop"/>
-								<Text id="dnTypeLabelId" text="{ path: 'budgetModel>DnType', formatter: '.formatter.captalizeFirstChar' }" textAlign="Center" class="sapUiSmallMarginTop"/>
-								<Text id="salesKeyLabelId" text="{ path: 'budgetModel>SalesDesc', formatter: '.formatter.captalizeFirstChar' }" textAlign="Center" class="sapUiSmallMarginTop"/>
-								<Text id="brandLabelId" text="{ path: 'budgetModel>Brand', formatter: '.formatter.captalizeFirstChar' }" textAlign="Center" class="sapUiSmallMarginTop"/>
-								<Text id="monthLabelId" textAlign="Center" text="{ path: 'budgetModel>BdgMonth', formatter: '.formatter.leftShiftZeros'}" class="sapUiSmallMarginTop"/>
+								<Text id="dnTypeLabelId" text="{ path: 'budgetModel>DnType', formatter: '.formatter.captalizeFirstChar' }" textAlign="Center"
+									class="sapUiSmallMarginTop"/>
+								<Text id="salesKeyLabelId" text="{ path: 'budgetModel>SalesDesc', formatter: '.formatter.captalizeFirstChar' }" textAlign="Center"
+									class="sapUiSmallMarginTop"/>
+								<Text id="brandLabelId" text="{budgetModel>Brand}" textAlign="Center" class="sapUiSmallMarginTop"/>
+								<Text id="monthLabelId" textAlign="Center" text="{ path: 'budgetModel>BdgMonth', formatter: '.formatter.leftShiftZeros'}"
+									class="sapUiSmallMarginTop"/>
 								<Text id="YearLabelId" text="{budgetModel>BdgYear}" textAlign="Center" class="sapUiSmallMarginTop"/>
-								<ObjectNumber id="orgBdgObjlId" class="sapUiSmallMarginTop" number="{ parts: [ {path: 'budgetModel>OriginalBdg'}, {path: 'budgetModel>Currency'} ], formatter: '.formatter.roundAmount' }" unit="{budgetModel>Currency}"/>
-								<ObjectNumber id="extBdgObjlId" class="sapUiSmallMarginTop" number="{ parts: [ {path: 'budgetModel>ExtendedBdg'}, {path: 'budgetModel>Currency'} ], formatter: '.formatter.roundAmount' }" unit="{budgetModel>Currency}" state="{ parts: [ {path: 'budgetModel>ExtendedBdg'}, {path: 'budgetModel>OriginalBdg'} ], formatter: '.formatter.budgetState' }"/>
-								<ObjectNumber id="remBdgObjlId" class="sapUiSmallMarginTop" number="{ parts: [ {path: 'budgetModel>RemaningBdg'}, {path: 'budgetModel>Currency'} ], formatter: '.formatter.roundAmount' }" unit="{budgetModel>Currency}" state="{ parts: [ {path: 'budgetModel>RemaningBdg'}, {path: 'budgetModel>OriginalBdg'} ], formatter: '.formatter.budgetState' }"/>
-								<Text id="userLabelId" text="{ parts: [ 'budgetModel>UserId', 'i18n&gt;oneWord' ], formatter: '.formatter.captalizeFirstChar' }" textAlign="Center" class="sapUiSmallMarginTop"/>
-								<Text id="dateLabelId" text="{ path: 'budgetModel>CreationDate', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MM-yyyy' } }" textAlign="Center" class="sapUiSmallMarginTop"/>
-								<Text id="timeLabelId" text="{path: 'budgetModel>CreationTime', formatter: '.formatter.timeFormatter'}" textAlign="Center" class="sapUiSmallMarginTop"/>
+								<ObjectNumber id="orgBdgObjlId" class="sapUiSmallMarginTop"
+									number="{ parts: [ {path: 'budgetModel>OriginalBdg'}, {path: 'budgetModel>Currency'} ], formatter: '.formatter.roundAmount' }"
+									unit="{budgetModel>Currency}"/>
+								<ObjectNumber id="extBdgObjlId" class="sapUiSmallMarginTop"
+									number="{ parts: [ {path: 'budgetModel>ExtendedBdg'}, {path: 'budgetModel>Currency'} ], formatter: '.formatter.roundAmount' }"
+									unit="{budgetModel>Currency}"
+									state="{ parts: [ {path: 'budgetModel>ExtendedBdg'}, {path: 'budgetModel>OriginalBdg'} ], formatter: '.formatter.budgetState' }"/>
+								<ObjectNumber id="remBdgObjlId" class="sapUiSmallMarginTop"
+									number="{ parts: [ {path: 'budgetModel>RemaningBdg'}, {path: 'budgetModel>Currency'} ], formatter: '.formatter.roundAmount' }"
+									unit="{budgetModel>Currency}"
+									state="{ parts: [ {path: 'budgetModel>RemaningBdg'}, {path: 'budgetModel>OriginalBdg'} ], formatter: '.formatter.budgetState' }"/>
+								<Text id="userLabelId" text="{ parts: [ 'budgetModel>UserId', 'i18n&gt;oneWord' ], formatter: '.formatter.captalizeFirstChar' }"
+									textAlign="Center" class="sapUiSmallMarginTop"/>
+								<Text id="dateLabelId"
+									text="{ path: 'budgetModel>CreationDate', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MM-yyyy' } }" textAlign="Center"
+									class="sapUiSmallMarginTop"/>
+								<Text id="timeLabelId" text="{path: 'budgetModel>CreationTime', formatter: '.formatter.timeFormatter'}" textAlign="Center"
+									class="sapUiSmallMarginTop"/>
 								<Button id="createExtButtonId" press="onCreateExtPress" icon="sap-icon://create-form"/>
 								<Button id="displayExtButtonId" press="onDisplayExtPress" icon="sap-icon://history"/>
 							</ColumnListItem>
