@@ -7,42 +7,45 @@
 					<Table id="budgetTableId" visible="{= ${configurationModel>/role} !== 'NotAuthorized' }" noDataText="{i18n>noData}"
 						items="{budgetModel>/results}" growing="true" class="">
 						<columns>
-							<Column width="10%">
+							<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>BdgId}"/>
 							</Column>
-							<Column width="15%">
+							<Column width="15%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>CompName}"/></Column>
-							<Column width="10%">
+							<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>DNType}"/></Column>
-							<Column width="10%">
+							<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>salesChannel}"/></Column>
-							<Column width="8%">
+							<Column width="8%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>brand}"/></Column>
-							<Column width="5%">
+							<Column width="5%" minScreenWidth="Tablet" demandPopin="true">
 								<text text="{i18n>month}"/></Column>
-							<Column width="5%">
-								<Text text="{i18n>year}"/></Column>
-							<Column width="8%">
+							<Column width="5%" minScreenWidth="Tablet" demandPopin="true">
+								<Text text="{i18n>year}" /></Column>
+							<Column width="8%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>origBdg}"/></Column>
-							<Column width="8%">
+							<Column width="8%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>extBdg}"/></Column>
-							<Column width="8%">
+							<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
+								<Text text="{i18n>remExt}"/>
+							</Column>
+							<Column width="8%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>remBdg}"/></Column>
-							<Column width="7%">
+							<Column width="7%" minScreenWidth="Desktop" demandPopin="true">
 								<Text text="{i18n>UID}"/></Column>
-							<Column width="8%">
+							<Column width="8%" minScreenWidth="Desktop" demandPopin="true">
 								<Text text="{i18n>dateBdg}"/></Column>
-							<Column width="7%">
+							<Column width="7%" minScreenWidth="Desktop" demandPopin="true">
 								<Text text="{i18n>timeBdg}"/></Column>
-							<Column width="7%">
+							<Column width="7%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>addExt}"/></Column>
-							<Column width="7%">
+							<Column width="7%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>createdExt}"/>
 							</Column>
 						</columns>
 						<items>
 							<ColumnListItem>
-							    <Text id="BdgIdTextId" text="{budgetModel>BdgId}" textAlign="Center" class="sapUiSmallMarginTop"/>
+								<Text id="BdgIdTextId" text="{budgetModel>BdgId}" textAlign="Center" class="sapUiSmallMarginTop"/>
 								<Text id="compCodeLabelId" text="{budgetModel>CompanyName}" textAlign="Center" class="sapUiSmallMarginTop"/>
 								<Text id="dnTypeLabelId" text="{ path: 'budgetModel>DnType', formatter: '.formatter.captalizeFirstChar' }" textAlign="Center"
 									class="sapUiSmallMarginTop"/>
@@ -59,6 +62,9 @@
 									number="{ parts: [ {path: 'budgetModel>ExtendedBdg'}, {path: 'budgetModel>Currency'} ], formatter: '.formatter.roundAmount' }"
 									unit="{budgetModel>Currency}"
 									state="{ parts: [ {path: 'budgetModel>ExtendedBdg'}, {path: 'budgetModel>OriginalBdg'} ], formatter: '.formatter.budgetState' }"/>
+								<Text id="remExtBdgLabelId"
+									text="{ parts: [ {path: 'budgetModel>RemainingExt'}, {path: 'budgetModel>Currency'} ], formatter: '.formatter.roundAmount' }"
+									textAlign="Center" class="sapUiSmallMarginTop"/>
 								<ObjectNumber id="remBdgObjlId" class="sapUiSmallMarginTop"
 									number="{ parts: [ {path: 'budgetModel>RemaningBdg'}, {path: 'budgetModel>Currency'} ], formatter: '.formatter.roundAmount' }"
 									unit="{budgetModel>Currency}"
@@ -70,7 +76,7 @@
 									class="sapUiSmallMarginTop"/>
 								<Text id="timeLabelId" text="{path: 'budgetModel>CreationTime', formatter: '.formatter.timeFormatter'}" textAlign="Center"
 									class="sapUiSmallMarginTop"/>
-								<Button id="createExtButtonId" press="onCreateExtPress" icon="sap-icon://create-form"/>
+								<Button id="createExtButtonId" press="onCreateExtPress" icon="sap-icon://create-form" enabled="{= ${budgetModel>Changeable} === 'X'}" />
 								<Button id="displayExtButtonId" press="onDisplayExtPress" icon="sap-icon://history"/>
 							</ColumnListItem>
 						</items>

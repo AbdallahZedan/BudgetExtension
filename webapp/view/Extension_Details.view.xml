@@ -9,7 +9,7 @@
 			<ux:ObjectPageLayout xmlns:layout="sap.ui.layout" xmlns:blockcolor="sap.uxap.sample.SharedBlocks" id="ObjectPageLayout"
 				enableLazyLoading="false" showAnchorBarPopover="false" height="100%" alwaysShowContentHeader="true">
 				<ux:headerContent>
-					<ObjectHeader title="{i18n>extNo} {extDetailsModel>/extDetails/LineId}, {i18n>BdgId} {extDetailsModel>/extDetails/BdgId} "
+					<ObjectHeader class="sapUiResponsiveMargin" title="{i18n>extNo} {extDetailsModel>/extDetails/LineId}, {i18n>BdgId} {extDetailsModel>/extDetails/BdgId} "
 						number="{ parts: [ {path: 'extDetailsModel>/extDetails/ExtAmount'}, {path: 'extDetailsModel>/extDetails/Curr'} ], formatter: '.formatter.roundAmount' }"
 						numberUnit="{extDetailsModel>/extDetails/Curr}" visible="{= ${extDetailsModel>/extDetails} !== undefined }" condensed="true"
 						responsive="true">

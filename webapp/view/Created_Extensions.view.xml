@@ -4,30 +4,30 @@
 		<Table busy="{configurationModel>/busyIndicatorFlag}" id="extensionTableId" class="sapUiResponsiveMargin" noDataText="{i18n>noExtData}"
 			width="auto" items="{extensionModel>/results}" visible="{= ${extensionModel>/results} !== undefined }">
 			<columns>
-				<Column width="10%">
+				<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
 					<Text text="{i18n>LineID}"/>
 				</Column>
-				<Column width="10%">
+				<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
 					<Text text="{i18n>UID}"/>
 				</Column>
-				<Column width="15%">
+				<Column width="15%" minScreenWidth="Tablet" demandPopin="true">
 					<Text text="{i18n>ExtAmount}"/>
 				</Column>
-				<Column width="15%">
+				<Column width="15%" minScreenWidth="Tablet" demandPopin="true">
 					<Text text="{i18n>remBdg}"/>
 				</Column>
-				<Column width="10%">
+				<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
 					<Text text="{i18n>ExtStatus}"/>
 				</Column>
-				<Column width="15%">
+				<Column width="15%" minScreenWidth="Tablet" demandPopin="true">
 					<Text text="{i18n>dateBdg}"/>
 				</Column>
-				<Column width="12%">
+				<Column width="12%" minScreenWidth="Tablet" demandPopin="true">
 					<Text text="{i18n>timeBdg}"/>
 				</Column>
 			</columns>
 			<items>
-				<ColumnListItem type="Active" press="onNavToExtDetail">
+				<ColumnListItem type="Navigation" press="onNavToExtDetail">
 					<cells>
 						<Text text="{ path: 'extensionModel>LineId', formatter: '.formatter.leftShiftZeros' }"/>
 						<Text text="{ parts: [ 'extensionModel>UserId', 'i18n>oneWord' ], formatter: '.formatter.captalizeFirstChar' }"/>
