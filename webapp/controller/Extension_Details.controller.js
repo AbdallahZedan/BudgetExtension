@@ -44,6 +44,7 @@ sap.ui.define([
 			this.retriveExtDetail(budgetId, lineId);
 			this.setConfigOfLaneAndNode(budgetId, lineId, createdBy);
 			this.retriveExtAttachment(budgetId, lineId);
+			this.retriveDnoteReqests(lineId);
 		},
 
 		retriveExtDetail: function(budgetId, lineId) {
@@ -86,6 +87,34 @@ sap.ui.define([
 
 			});
 
+		},
+
+		retriveDnoteReqests: function(lineId) {
+			var DNotePath = "/BdgExtensionSet(LineId='" + lineId + "',BdgId='0000000000')/DNoteOfExtSet",
+				that = this;
+
+			this.configurationModel.setProperty("/busyIndicatorFlag", true);
+			this.oDataModel.read(DNotePath, {
+				method: "GET",
+
+				success: function(dnoteReq) {
+					that.configurationModel.setProperty("/busyIndicatorFlag", false);
+					that.extDetailsModel.setProperty("/DNoteRequests", dnoteReq.results);
+				},
+				error: function(error) {
+					that.configurationModel.setProperty("/busyIndicatorFlag", false);
+					MessageToast.show(that.getTextFromResourceBundle("failDisplayDNoteReq"));
+				}
+			});
+
+		},
+
+		onAttachmentItemPress: function(oEvent) {
+			var attchPhysicalId = oEvent.getSource().getBindingContext("extDetailsModel").getObject().PhysicalId;
+			if (attchPhysicalId) {
+				var url = this.getOwnerComponent().getModel().sServiceUrl + "/DNoteOriginalSet('" + attchPhysicalId + "')/$value";
+				window.open(url, '_blank');
+			}
 		},
 
 		setConfigOfLaneAndNode: function(budgetId, lineId, createdBy) {
@@ -149,7 +178,7 @@ sap.ui.define([
 						return oValue.StepNo === '1';
 					});
 
-					// push nodes of level one as child of inititor node 
+					// push nodes of level one as child of inititor node&nbsp;
 					children.forEach(function(child) {
 						nodes[0].children.push(child.UserName + child.WorkItem);
 					});
@@ -263,16 +292,9 @@ sap.ui.define([
 			} else {
 				this.getRouter().navTo("Route_Display", {}, true /*no history*/ );
 			}
-		},
-
-		onAttachmentItemPress: function(oEvent) {
-			var attchPhysicalId = oEvent.getSource().getBindingContext("extDetailsModel").getObject().PhysicalId;
-			if (attchPhysicalId) {
-				var url = this.getOwnerComponent().getModel().sServiceUrl + "/DNoteOriginalSet('" + attchPhysicalId + "')/$value";
-				window.open(url, '_blank');
-			}
 		}
 
+	
 		/**
 		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
 		 * (NOT before the first rendering! onInit() is used for that one!).

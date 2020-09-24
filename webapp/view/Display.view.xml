@@ -5,7 +5,7 @@
 			<Page busy="{configurationModel>/busyIndicatorFlag}">
 				<content>
 					<Table id="budgetTableId" visible="{= ${configurationModel>/role} !== 'NotAuthorized' }" noDataText="{i18n>noData}"
-						items="{budgetModel>/results}" growing="true" class="">
+						items="{budgetModel>/results}" >
 						<columns>
 							<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>BdgId}"/>

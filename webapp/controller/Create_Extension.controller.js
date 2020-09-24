@@ -4,8 +4,11 @@ sap.ui.define([
 	"sap/m/MessageToast",
 	"sap/m/MessageBox",
 	"BudgetExtension/model/formatter",
-	"sap/ui/core/routing/History"
-], function(BaseController, JSONModel, MessageToast, MessageBox, formatter, History) {
+	"sap/ui/core/routing/History",
+	"sap/ui/model/Filter",
+	"sap/ui/model/FilterOperator",
+	"sap/ui/model/FilterType"
+], function(BaseController, JSONModel, MessageToast, MessageBox, formatter, History, Filter, FilterOperator, FilterType) {
 
 	"use strict";
 
@@ -25,10 +28,14 @@ sap.ui.define([
 			this.budgetModel = new JSONModel();
 			this.createExtModel = new JSONModel();
 			this.configurationModel = new JSONModel();
-			// 			this.setModel(this.budgetModel, "budgetModel");
+			this.DNModel = new JSONModel();
+			this.setModel(this.DNModel, "DNModel");
+			//this.setModel(this.budgetModel, "budgetModel");
 			this.setModel(this.createExtModel, "createExtModel");
 			this.setModel(this.configurationModel, "configurationModel");
+
 			this.configurationModel.setProperty("/busyIndicatorFlag", false);
+			this.DNModel.setProperty("/DNoteReqests", []);
 
 			this.oDataModel = this.getOwnerComponent().getModel();
 			oRouter.getRoute("Route_Create_Ext").attachMatched(this._onRouteFound, this);
@@ -37,19 +44,49 @@ sap.ui.define([
 
 		_onRouteFound: function(oEvtent) {
 			var oArgument = oEvtent.getParameter("arguments"),
+				// brand = oArgument.Brand,
 				bdgAllocPath = "/BdgAllocationSet('" + oArgument.BdgId + "')",
 				that = this;
 
 			this.configurationModel.setProperty("/busyIndicatorFlag", true);
 			this.oDataModel.read(bdgAllocPath, {
 				method: 'GET',
-				success: function(oData) {
+				success: function(data) {
 					that.configurationModel.setProperty("/busyIndicatorFlag", false);
-					that.createExtModel.setData(oData);
+					that.createExtModel.setData(data);
+					// that.getAllDebitNote();
 				},
 				error: function(error) {
 					that.configurationModel.setProperty("/busyIndicatorFlag", false);
-					that.getTextFromResourceBundle("failGetBdg");
+					MessageToast.show(that.getTextFromResourceBundle("failGetBdg"));
+				}
+			});
+
+		},
+
+		getAllDebitNote: function() {
+
+			var DNOfEvxtPath = "/DNoteOfExtSet",
+				oDNFilters = [],
+				that = this;
+
+			oDNFilters.push(new Filter("Status", FilterOperator.EQ, "CREATED"));
+			// oDNFilters.push(new Filter("Brand", FilterOperator.Contains, brand));
+			oDNFilters.push(new Filter("CompCode", FilterOperator.EQ,
+				this.createExtModel.getProperty("/CompanyCode")));
+
+			this.configurationModel.setProperty("/busyIndicatorFlag", true);
+			this.oDataModel.read(DNOfEvxtPath, {
+				method: 'GET',
+				filters: oDNFilters,
+				success: function(data) {
+					that.configurationModel.setProperty("/busyIndicatorFlag", false);
+					that.createExtModel.setProperty("/DNoteReqests", data.results);
+
+				},
+				error: function(error) {
+					that.configurationModel.setProperty("/busyIndicatorFlag", false);
+					MessageToast.show(that.getTextFromResourceBundle("failGetDN"));
 				}
 			});
 		},
@@ -85,6 +122,9 @@ sap.ui.define([
 			//add attachment
 			oExtBudget.DNoteAttachmentSet = extAttachmentArr;
 
+			// add dnote
+			oExtBudget.DNoteOfExtSet = this.validateDnArray(this.DNModel.getProperty("/DNoteReqests"));
+
 			if (!validatorFlag) {
 				MessageToast.show(this.getTextFromResourceBundle("ExtNotValid"));
 				return;
@@ -98,6 +138,8 @@ sap.ui.define([
 					that.configurationModel.setProperty("/busyIndicatorFlag", false);
 
 					if (extReq.BdgId !== "0000000000") {
+
+						//call deep insert of DNote
 
 						MessageBox.success(that.getTextFromResourceBundle("CreatSucc"), {
 							actions: [MessageBox.Action.OK],
@@ -136,7 +178,7 @@ sap.ui.define([
 
 		},
 
-		onListDeletePress: function(oEvent) {
+		onDeleteListPress: function(oEvent) {
 
 			var editmode = false,
 				oControl;
@@ -152,14 +194,13 @@ sap.ui.define([
 				oControl.setIcon("sap-icon://decline");
 				parent.setMode("Delete");
 			} else {
-				oControl.setTooltip(this.getTextFromResourceBundle("attachmentDelete"));
+				oControl.setTooltip(this.getTextFromResourceBundle("deleteTooltip"));
 				oControl.setIcon("sap-icon://delete");
 				parent.setMode("None");
 			}
-
 		},
 
-		onItemDelete: function(oEvent) {
+		onDeleteAttachItemPress: function(oEvent) {
 
 			var path = oEvent.getParameter("listItem").getBindingContext("createExtModel").getPath(),
 				that = this;
@@ -177,6 +218,28 @@ sap.ui.define([
 				}
 			});
 
+		},
+
+		validateDnArray: function(oArray) {
+
+			var oExsistedDNotes = this.createExtModel.getProperty("/DNoteReqests"),
+				validArray = [];
+
+			if (oArray === undefined) {
+				return undefined;
+			}
+			for (var i = 0; i < oArray.length; i++) {
+
+				for (var j = 0; j < oExsistedDNotes.length; j++) {
+
+					if (oExsistedDNotes[j].ReqId === oArray[i].ReqId) {
+						validArray.push(oArray[i]);
+					}
+				}
+
+			}
+
+			return validArray;
 		},
 
 		handleUploadPress: function(oEvent) {
@@ -255,6 +318,7 @@ sap.ui.define([
 
 		clearAll: function() {
 			this.createExtModel.setData({});
+			this.DNModel.setData({});
 		},
 
 		onNavBack: function() {
@@ -268,7 +332,135 @@ sap.ui.define([
 			} else {
 				this.getRouter().navTo("Route_Display", {}, true /*no history*/ );
 			}
+		},
+
+		onSaveDN: function(oEvent) {
+
+			var oDNTable = this.getView().byId("DNTableId"),
+				DNItems = this.DNModel.getProperty("/DNoteReqests"),
+				that = this;
+
+			// this.lastSelectedDNItems = oDNTable.getSelectedContextPaths();
+
+			oDNTable.getSelectedContextPaths().forEach(function(item) {
+				var index = that.getIndexOfIem(item);
+				DNItems.push(that.createExtModel.getProperty("/DNoteReqests")[index]);
+			});
+
+			this.DNModel.setProperty("/DNoteReqests", DNItems);
+
+			oDNTable.setMode("None");
+			this.DNModel.getProperty("/StatusOfDNTable", "cancel");
+		},
+
+		onCancelDN: function() {
+			var oDNTable = this.getView().byId("DNTableId");
+
+			this.DNModel.setProperty("/DNoteReqests", []);
+			oDNTable.setMode("MultiSelect");
+			this.DNModel.getProperty("/StatusOfDNTable", "none");
+			// oDNTable.setSelectedContextPaths(this.lastSelectedDNItems);
+
+		},
+
+		onAddDN: function(oEvent) {
+
+			var oDNTable = this.getView().byId("DNTableId"),
+				oRows = this.DNModel.getProperty("/DNoteReqests");
+
+			// check if oRows is undefined so we will create empty array 
+			if (oRows === undefined) {
+				oRows = [];
+			}
+
+			oRows.unshift({
+
+				DnoteType: "",
+				ReqId: "",
+				CompCode: "",
+				ExtId: "",
+				Status: ""
+			});
+
+			this.DNModel.setProperty("/DNoteReqests", oRows);
+			this.DNModel.refresh(true);
+			oDNTable.setSelectedItem(oDNTable.getItems()[0]);
+
+		},
+
+		onRemoveDN: function() {
+			var oDNTable = this.getView().byId("DNTableId"),
+				oRows = this.DNModel.getProperty("/DNoteReqests"),
+				oContexts = oDNTable.getSelectedContexts();
+
+			for (var i = oContexts.length - 1; i >= 0; i--) {
+
+				var oObject = oContexts[i].getObject();
+
+				var index = $.map(oRows, function(obj, index) {
+
+					if (obj === oObject) {
+						return index;
+					}
+				});
+
+				oRows.splice(index, 1);
+			}
+
+			this.DNModel.setProperty("/DNoteReqests", oRows);
+			oDNTable.removeSelections(true);
+		},
+
+		// onDNItemPress: function() {
+
+		// 	var oDNTable = this.getView().byId("DNTableId");
+
+		// 	if (oDNTable.getSelectedItems().length > 0) {
+		// 		this.DNModel.getProperty("/StatusOfDNTable", "save");
+		// 	}
+		// }
+
+		onPressValueHelp: function(oEvent) {
+
+			this.oSelectedIndex = this.getIndexOfIem(oEvent.getSource().getBindingContext("DNModel").getPath());
+			this.configurationModel.setProperty("/busyIndicatorFlag", true);
+			this._DNFragment = sap.ui.xmlfragment(this.getView().getId(), "BudgetExtension.view.DNValueHelp", this);
+			this.getView().addDependent(this._DNFragment);
+			this._DNFragment.setModel(this.configurationModel);
+			this._DNFragment.setModel(this.createExtModel);
+			this._DNFragment.open();
+
+			this.configurationModel.setProperty("/busyIndicatorFlag", false);
+
+		},
+
+		onCloseDialog: function(oEvent) {
+
+			var oDNObject = oEvent.getSource().getBindingContext("createExtModel").getObject(),
+				oRows = this.DNModel.getProperty("/DNoteReqests");
+
+			oRows[this.oSelectedIndex] = oDNObject;
+			this.DNModel.setProperty("/DNoteReqests", oRows);
+
+			this.oSelectedIndex = null;
+			this._DNFragment.destroy();
+		},
+
+		onCancelPressed: function() {
+			this.oSelectedIndex = null;
+			this._DNFragment.destroy();
 		}
+
+		// onSearchValueChanged: function() {
+
+		// 	var searchValue = this.getView().byId("reqIdSearchInput").getValue(),
+		// 		oDNTable = this.getView().byId("searchHelpTableId"),
+		// 		oFilters = [];
+
+		// 	oFilters.push(new Filter("ReqId", FilterOperator.Contains, searchValue));
+		// 	oDNTable.getBinding("items").filter(oFilters);
+
+		// }
 
 		/**
 		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered

@@ -9,11 +9,11 @@
 			<ux:ObjectPageLayout xmlns:layout="sap.ui.layout" xmlns:blockcolor="sap.uxap.sample.SharedBlocks" id="ObjectPageLayout"
 				enableLazyLoading="false" showAnchorBarPopover="false" height="100%" alwaysShowContentHeader="true">
 				<ux:headerContent>
-					<ObjectHeader class="sapUiResponsiveMargin" title="{i18n>extNo} {extDetailsModel>/extDetails/LineId}, {i18n>BdgId} {extDetailsModel>/extDetails/BdgId} "
+					<ObjectHeader class="sapUiResponsiveMargin"
+						title="{i18n>extNo} {extDetailsModel>/extDetails/LineId}, {i18n>BdgId} {extDetailsModel>/extDetails/BdgId} "
 						number="{ parts: [ {path: 'extDetailsModel>/extDetails/ExtAmount'}, {path: 'extDetailsModel>/extDetails/Curr'} ], formatter: '.formatter.roundAmount' }"
 						numberUnit="{extDetailsModel>/extDetails/Curr}" visible="{= ${extDetailsModel>/extDetails} !== undefined }" condensed="true"
 						responsive="true">
-					    
 						<!--<attributes>-->
 						<ObjectAttribute title="{i18n>createdBy}"
 							text="{ parts: [ 'extDetailsModel>/extDetails/UserId', 'i18n>oneWord' ], formatter: '.formatter.captalizeFirstChar' }"
@@ -72,7 +72,7 @@
 					<ux:ObjectPageSection title="{i18n>Attach}">
 						<ux:subSections>
 							<ux:ObjectPageSubSection>
-								<VBox class="sapUiSmallMargin" visible="{= ${extDetailsModel>/extAttachments} !== undefined }" >
+								<VBox class="sapUiSmallMargin" visible="{= ${extDetailsModel>/extAttachments} !== undefined }">
 									<f:SimpleForm editable="false" layout="ResponsiveGridLayout" title="{i18n>docInfo}" labelSpanXL="3" labelSpanL="3" labelSpanM="3"
 										labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
 										singleContainerFullSize="false" class="sapUiSmallMarginTop">
@@ -90,6 +90,30 @@
 										</items>
 									</List>
 								</VBox>
+							</ux:ObjectPageSubSection>
+						</ux:subSections>
+					</ux:ObjectPageSection>
+					<ux:ObjectPageSection title="{i18n>DNRequest}">
+						<ux:subSections>
+							<ux:ObjectPageSubSection>
+								<Table id="dnoteTableId" class="sapUiResponsiveMargin" width="auto" items="{extDetailsModel>/DNoteRequests}">
+									<columns>
+										<Column>
+											<Text text="{i18n>ReqId}"/>
+										</Column>
+										<Column>
+											<Text text="{i18n>ReqType}"/>
+										</Column>
+									</columns>
+									<items>
+										<ColumnListItem>
+											<cells>
+												<Text text="{extDetailsModel>ReqId}"/>
+												<Text text="{extDetailsModel>DnoteType}"/>
+											</cells>
+										</ColumnListItem>
+									</items>
+								</Table>
 							</ux:ObjectPageSubSection>
 						</ux:subSections>
 					</ux:ObjectPageSection>

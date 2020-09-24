@@ -187,21 +187,21 @@ sap.ui.define([
 				newChannelFilter = {},
 				newBrandFilter = {};
 
-			if (!oDnTypeItem && lastDnTypeValue!== "") {
+			if (!oDnTypeItem && lastDnTypeValue !== "") {
 				dnTypeComboBox.setSelectedKey(lastDnTypeValue);
 				newDnTypeFilter.DnType = lastDnTypeValue;
 				dnTypeArr.push(newDnTypeFilter);
 				this.filterModel.setProperty("/DNTypes", dnTypeArr);
 			}
 
-			if (!oChannelItem && lastChannelValue!== "") {
+			if (!oChannelItem && lastChannelValue !== "") {
 				channelComboBox.setSelectedKey(lastChannelValue);
 				newChannelFilter.SalesDesc = lastChannelValue;
 				channelArr.push(newChannelFilter);
 				this.filterModel.setProperty("/SalesChannels", channelArr);
 			}
 
-			if (!oBrandItem && lastBrandValue!== "") {
+			if (!oBrandItem && lastBrandValue !== "") {
 				brandComboBox.setSelectedKey(lastBrandValue);
 				newBrandFilter.Brand = lastBrandValue;
 				brandArr.push(newBrandFilter);

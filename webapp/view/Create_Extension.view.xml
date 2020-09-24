@@ -1,19 +1,14 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:l="sap.ui.layout" xmlns:ux="sap.uxap" xmlns:semantic="sap.m.semantic" xmlns:footerbar="sap.ushell.ui.footerbar"
-	controllerName="BudgetExtension.controller.Create_Extension">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:l="sap.ui.layout" xmlns:ux="sap.uxap" xmlns:semantic="sap.m.semantic" xmlns:footerbar="sap.ushell.ui.footerbar" controllerName="BudgetExtension.controller.Create_Extension">
 	<semantic:DetailPage id="" navButtonPress="onNavBack" showNavButton="true" busy="{configurationModel>/busyIndicatorFlag}">
 		<semantic:content>
-			<ux:ObjectPageLayout xmlns:layout="sap.ui.layout" xmlns:blockcolor="sap.uxap.sample.SharedBlocks" id="ObjectPageLayout"
-				enableLazyLoading="false" showAnchorBarPopover="false" height="100%" alwaysShowContentHeader="true">
+			<ux:ObjectPageLayout xmlns:layout="sap.ui.layout" xmlns:blockcolor="sap.uxap.sample.SharedBlocks" id="ObjectPageLayout" enableLazyLoading="false" showAnchorBarPopover="false" height="100%" alwaysShowContentHeader="true">
 				<ux:headerContent>
-					<ObjectHeader title="{i18n>origBdg} {createExtModel>/BdgId}"
-						number="{ parts: [ {path: 'createExtModel>/OriginalBdg'}, {path: 'createExtModel>/Currency'} ], formatter: '.formatter.roundAmount' }"
-						numberUnit="{createExtModel>/Currency}"  visible="{= ${createExtModel>/BdgId} !== undefined }" condensed="true" responsive="true">
-						<attributes visible="{= ${createExtModel>/BdgId} !== undefined }" >
+					<ObjectHeader title="{i18n>origBdg} {createExtModel&gt;/BdgId}" number="{ parts: [ {path: 'createExtModel>/OriginalBdg'}, {path: 'createExtModel>/Currency'} ], formatter: '.formatter.roundAmount' }" numberUnit="{createExtModel>/Currency}" visible="{= ${createExtModel>/BdgId} !== undefined }" condensed="true" responsive="true">
+						<attributes visible="{= ${createExtModel>/BdgId} !== undefined }">
 							<ObjectAttribute title="{i18n>DNType}" text="{ path: 'createExtModel>/DnType', formatter: '.formatter.captalizeFirstChar' }"/>
 							<ObjectAttribute title="{i18n>salesChannel}" text="{ path: 'createExtModel>/SalesDesc', formatter: '.formatter.captalizeFirstChar' }"/>
 							<ObjectAttribute title="{i18n>brand}" text="{ path: 'createExtModel>/Brand', formatter: '.formatter.captalizeFirstChar' }"/>
-							<ObjectAttribute title="{i18n>BdgMonth}" text="{createExtModel>/BdgMonth}-{createExtModel>/BdgYear}"/>
+							<ObjectAttribute title="{i18n>BdgMonth}" text="{createExtModel>/BdgMonth}-{createExtModel&gt;/BdgYear}"/>
 						</attributes>
 					</ObjectHeader>
 				</ux:headerContent>
@@ -21,14 +16,12 @@
 					<ux:ObjectPageSection title="{i18n>CrExtTitle}">
 						<ux:subSections>
 							<ux:ObjectPageSubSection>
-								<VBox  visible="{= ${createExtModel>/BdgId} !== undefined }" width="100%" direction="Column" id="extVBoxId" class="sapUiTinyMarginBeginEnd sapUiResponsiveMargin">
+								<VBox visible="{= ${createExtModel>/BdgId} !== undefined }" width="100%" direction="Column" id="extVBoxId" class="sapUiTinyMarginBeginEnd sapUiResponsiveMargin">
 									<items>
 										<Label text="{i18n>origBdg}" id="origLabelId" width="100%" class="sapUiTinyMarginTopBottom"/>
-										<Input value="{ parts: [ {path: 'createExtModel>/OriginalBdg'}, {path: 'createExtModel>/Currency'} ], formatter: '.formatter.roundAmount' }"
-											description="{createExtModel>/Currency}" editable="false" id="origInputlId" width="100%"/>
+										<Input value="{ parts: [ {path: 'createExtModel>/OriginalBdg'}, {path: 'createExtModel>/Currency'} ], formatter: '.formatter.roundAmount' }" description="{createExtModel>/Currency}" editable="false" id="origInputlId" width="100%"/>
 										<Label text="{i18n>remBdg}" id="remaningLabelId" width="100%" class="sapUiTinyMarginTopBottom"/>
-										<Input value="{ parts: [ {path: 'createExtModel>/RemaningBdg'}, {path: 'createExtModel>/Currency'} ], formatter: '.formatter.roundAmount' }"
-											description="{createExtModel>/Currency}" editable="false" id="remaningInputlId" width="100%"/>
+										<Input value="{ parts: [ {path: 'createExtModel>/RemaningBdg'}, {path: 'createExtModel>/Currency'} ], formatter: '.formatter.roundAmount' }" description="{createExtModel>/Currency}" editable="false" id="remaningInputlId" width="100%"/>
 										<Label text="{i18n>ExtAmount}" id="extLabelId" width="100%" class="sapUiTinyMarginTopBottom" design="Bold" required="true"/>
 										<Input value="{createExtModel>/ExtAmount}" description="{createExtModel>/Currency}" id="extAmountInputlId" width="100%"/>
 									</items>
@@ -36,21 +29,65 @@
 							</ux:ObjectPageSubSection>
 						</ux:subSections>
 					</ux:ObjectPageSection>
-					<ux:ObjectPageSection  visible="{= ${createExtModel>/BdgId} !== undefined }" title="{i18n>Attach}">
+					<ux:ObjectPageSection visible="{= ${createExtModel>/BdgId} !== undefined }" title="{i18n>Attach}">
 						<ux:subSections>
 							<ux:ObjectPageSubSection>
-								<List items="{createExtModel>/DNoteAttachmentSet}" delete="onItemDelete">
+								<List items="{createExtModel>/DNoteAttachmentSet}" delete="onDeleteAttachItemPress">
 									<headerToolbar>
 										<Toolbar>
 											<ToolbarSpacer/>
-											<Button icon="sap-icon://delete" type="Reject" tooltip="{i18n>attachmentDelete}" press="onListDeletePress"/>
 											<Button icon="sap-icon://add" type="Emphasized" tooltip="{i18n>attachmentAdd}" press="handleAddAttachmentPress"/>
+											<Button icon="sap-icon://delete" type="Reject" tooltip="{i18n>attachmentDelete}" press="onDeleteListPress"/>
 										</Toolbar>
 									</headerToolbar>
 									<items>
-										<StandardListItem icon="sap-icon://document" title="{createExtModel>Filename}.{createExtModel>Extension}"/>
+										<StandardListItem icon="sap-icon://document" title="{createExtModel>Filename}.{createExtModel&gt;Extension}"/>
 									</items>
 								</List>
+							</ux:ObjectPageSubSection>
+						</ux:subSections>
+					</ux:ObjectPageSection>
+					<ux:ObjectPageSection visible="{= ${createExtModel>/BdgId} !== undefined }" title="{i18n>DNoteReq}">
+						<ux:subSections>
+							<ux:ObjectPageSubSection>
+								<!--<List items="{createExtModel>/DNoteReqests}" delete="onDeleteDNItemPress">-->
+								<!--	<headerToolbar>-->
+								<!--		<Toolbar>-->
+								<!--			<ToolbarSpacer/>-->
+								<!--			<Button icon="sap-icon://delete" type="Reject" tooltip="{i18n>attachmentDelete}" press="onDeleteDNPress"/>-->
+								<!--			<Button icon="sap-icon://add" type="Emphasized" tooltip="{i18n>attachmentAdd}" press="handleAddDNPress"/>-->
+								<!--		</Toolbar>-->
+								<!--	</headerToolbar>-->
+								<!--	<items>-->
+								<!--<StandardListItem title="{createExtModel>ReqId}" description="{createExtModel>DnType}"/>-->
+								<!--<Input placeholder="{i18n>addDN}" value="{DNModel>/DnType}" showValueHelp="true" valueHelpRequest=".onPressValueHelp"/>-->
+								<!--<Text text="{DNModel>/ReqId}" visible="{= ${DNModel>/ReqId} !== undefined }"/>-->
+								<!--<CheckBox text="{createExtModel>DnType}" selected="{createExtModel>Selected}" />-->
+								<!--	</items>-->
+								<!--</List>-->
+								<Panel width="auto" class="sapUiResponsiveMargin">
+									<content>
+										<Table id="DNTableId" noDataText="{i18n>addDN}" items="{DNModel>/DNoteReqests}" mode="MultiSelect">
+											<columns>
+												<Column width="40%" minScreenWidth="Tablet" demandPopin="true"><Text text="{i18n>ReqId}"/></Column>
+												<Column width="60%" minScreenWidth="Tablet" demandPopin="true"><Text text="{i18n>DNType}"/></Column>
+											</columns>
+											<items>
+												<ColumnListItem>
+													<Input id="reqInputId" value="{DNModel>ReqId}" showValueHelp="true" valueHelpRequest="onPressValueHelp" />
+													<Text id="DnTypeTextId" text="{DNModel>DnoteType}" visible="{= ${DNModel>DnoteType} !== undefined}"/>
+												</ColumnListItem>
+											</items>
+										</Table>
+									</content>
+									<headerToolbar>
+										<Toolbar height="3rem">
+											<ToolbarSpacer/>
+											<Button icon="sap-icon://add" type="Emphasized" press="onAddDN"/>
+											<Button icon="sap-icon://sys-minus" type="Reject" press="onRemoveDN" visible="{= ${DNModel>/DNoteReqests} !== undefined }"/>
+										</Toolbar>
+									</headerToolbar>
+								</Panel>
 							</ux:ObjectPageSubSection>
 						</ux:subSections>
 					</ux:ObjectPageSection>

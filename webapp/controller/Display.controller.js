@@ -30,7 +30,7 @@ sap.ui.define([
 			this.budgetModel = new JSONModel();
 			this.processFlowModel = new JSONModel();
 			this.filterModel = new JSONModel();
-			
+
 			this.filterSuggestionFlag = false;
 
 			this.setModel(this.configurationModel, "configurationModel");
@@ -112,7 +112,6 @@ sap.ui.define([
 
 		},
 
-
 		onSelectionChange: function(oEvent) {
 			var selectedKey = oEvent.getParameters().key;
 
@@ -130,15 +129,15 @@ sap.ui.define([
 			var indexPath = oEvent.getSource().getBindingContext("budgetModel").sPath,
 				selectedIndex = this.getIndexOfIem(indexPath),
 				oRouter = this.getRouter();
-		
+
 			oRouter.navTo("Route_Create_Ext", {
 
 				BdgId: this.budgetModel.getProperty("/results")[selectedIndex].BdgId
+				
 			});
 
 		},
 
-	
 		onCancelPress: function(oEvent) {
 
 			var oTable = this.getView().byId("budgetTableId"),

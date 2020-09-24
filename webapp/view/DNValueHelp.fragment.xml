@@ -1,0 +1,27 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog id="searchHelpId" title="{i18n>DNFragmentTitle}" contentHeight="30%" contentWidth="30%">
+		<Input id="reqIdSearchInput" class="sapUiMediumMarginBegin" placeholder="{i18n>SearchPlacHolder}" liveChange="onSearchValueChanged" width="60%"/>
+		<Table id="searchHelpTableId" class="sapUiResponsiveMargin" width="auto" items="{createExtModel>/DNoteReqests}">
+			<columns>
+					<Column>
+						<Text text="{i18n>ReqId}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>ReqType}"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Navigation" press="onCloseDialog">
+						<cells>
+							<Text text="{createExtModel>ReqId}"/>
+							<Text text="{createExtModel>DnoteType}"/>
+						</cells>
+					</ColumnListItem>
+			
+				</items>
+		</Table>
+		<beginButton>
+			<Button icon="sap-icon://cancel" press="onCancelPressed"/>
+		</beginButton>
+	</Dialog>
+</core:FragmentDefinition>
