@@ -99,6 +99,9 @@ sap.ui.define([
 
 				success: function(dnoteReq) {
 					that.configurationModel.setProperty("/busyIndicatorFlag", false);
+					dnoteReq.results.forEach(function(dNote) {
+						dNote.reportUrl = that.getNavigationUrl(dNote.ReqId);
+					});
 					that.extDetailsModel.setProperty("/DNoteRequests", dnoteReq.results);
 				},
 				error: function(error) {
@@ -113,7 +116,7 @@ sap.ui.define([
 			var attchPhysicalId = oEvent.getSource().getBindingContext("extDetailsModel").getObject().PhysicalId;
 			if (attchPhysicalId) {
 				var url = this.getOwnerComponent().getModel().sServiceUrl + "/DNoteOriginalSet('" + attchPhysicalId + "')/$value";
-				window.open(url, '_blank');
+				window.open(url, "_blank");
 			}
 		},
 
@@ -285,7 +288,7 @@ sap.ui.define([
 
 			oHistory = History.getInstance();
 			sPreviousHash = oHistory.getPreviousHash();
-			previousPage = oHistory.getPreviousHash().split('/')[1];
+			previousPage = oHistory.getPreviousHash().split("/")[1];
 			this.clearAll();
 			if (sPreviousHash !== undefined && previousPage !== "Create_Extension") {
 				window.history.go(-1);
@@ -294,7 +297,6 @@ sap.ui.define([
 			}
 		}
 
-	
 		/**
 		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
 		 * (NOT before the first rendering! onInit() is used for that one!).

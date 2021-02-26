@@ -47,6 +47,7 @@ sap.ui.define([
 		retriveBudgetAllocation: function() {
 
 			var notAuth = this.getTextFromResourceBundle("notAuthStatus"),
+				noBudget = this.getTextFromResourceBundle("noBudget"),
 				emptyAndAuthFlag = false,
 				that = this,
 				oFilters = [],
@@ -64,12 +65,13 @@ sap.ui.define([
 					var budgetArr = data.results;
 					budgetArr.forEach(function(x) {
 						// check if user dosen't have any role to view this app 
+						x.CreationDate.setHours(0);
 						if (x.SalesDesc === notAuth) {
 							emptyAndAuthFlag = true;
 							that.configurationModel.setProperty("/role", "NotAuthorized");
 							return;
 						}
-						if (x.BdgId === "0000000000") {
+						if (x.SalesDesc === noBudget) {
 							emptyAndAuthFlag = true;
 							return;
 						}
@@ -133,7 +135,7 @@ sap.ui.define([
 			oRouter.navTo("Route_Create_Ext", {
 
 				BdgId: this.budgetModel.getProperty("/results")[selectedIndex].BdgId
-				
+
 			});
 
 		},
@@ -148,16 +150,58 @@ sap.ui.define([
 			this.clearStateOfAllInputs(oItems);
 		},
 
+		handleSelectionFinish: function(oEvent) {
+			var comboBoxId = oEvent.getSource().getId().split("-")[2],
+				selectedItems = oEvent.getParameter("selectedItems"),
+				filterArr = [];
+
+			// get all selected values
+			selectedItems.forEach(function(item) {
+				filterArr.push(item.getText());
+			});
+
+			// add filter values on its own filter property 
+			switch (comboBoxId) {
+				case "DNTypeMComboBoxId":
+					this.filterModel.setProperty("/SelectedDnType", filterArr);
+					break;
+				case "brandMComboBoxId":
+					this.filterModel.setProperty("/SelectedBrand", filterArr);
+					break;
+				case "salesChannelMComboBoxId":
+					this.filterModel.setProperty("/SelectedSalesChannel", filterArr);
+					break;
+				case "createdFromMMComboBoxId":
+					this.filterModel.setProperty("/SelectedMonth", filterArr);
+					break;
+				case "createdFromYMComboBoxId":
+					this.filterModel.setProperty("/SelectedYear", filterArr);
+					break;
+				case "createdByMComboBoxId":
+					this.filterModel.setProperty("/SelectedUser", filterArr);
+					break;
+			}
+		},
+
 		setSuggestionOfFilters: function(arr) {
 			var dntypeArr = [],
 				salesChannelArr = [],
 				brandArr = [],
+				userArr = [],
+				monthArr = [],
+				yearArr = [],
 				dntypes = [],
 				salesChannels = [],
 				brands = [],
+				users = [],
+				months = [],
+				years = [],
 				dntypeObj = {},
 				salesObj = {},
-				brandObj = {};
+				brandObj = {},
+				userObj = {},
+				monthObj = {},
+				yearObj = {};
 
 			arr.forEach(function(x) {
 
@@ -174,6 +218,18 @@ sap.ui.define([
 				if (!brandArr.includes(x.Brand)) {
 					// x.Brand = formatter.captalizeFirstChar(x.Brand);
 					brandArr.push(x.Brand);
+				}
+
+				if (!userArr.includes(x.UserId)) {
+					userArr.push(x.UserId);
+				}
+
+				if (!monthArr.includes(x.BdgMonth)) {
+					monthArr.push(x.BdgMonth);
+				}
+
+				if (!yearArr.includes(x.BdgYear)) {
+					yearArr.push(x.BdgYear);
 				}
 
 			});
@@ -196,9 +252,30 @@ sap.ui.define([
 				brandObj = {};
 			});
 
+			userArr.forEach(function(x) {
+				userObj.UserId = formatter.captalizeFirstChar(x);
+				users.push(userObj);
+				userObj = {};
+			});
+
+			monthArr.forEach(function(x) {
+				monthObj.BdgMonth = formatter.leftShiftZeros(x);
+				months.push(monthObj);
+				monthObj = {};
+			});
+
+			yearArr.forEach(function(x) {
+				yearObj.BdgYear = x;
+				years.push(yearObj);
+				yearObj = {};
+			});
+
 			this.filterModel.setProperty("/DNTypes", dntypes);
 			this.filterModel.setProperty("/SalesChannels", salesChannels);
 			this.filterModel.setProperty("/Brands", brands);
+			this.filterModel.setProperty("/Users", users);
+			this.filterModel.setProperty("/Months", months);
+			this.filterModel.setProperty("/Years", years);
 
 		},
 
@@ -235,60 +312,133 @@ sap.ui.define([
 
 		onApplyFilter: function(oEvent) {
 
-			this.handleAddingFilters();
+			// this.handleAddingFilters();
 
-			var dnTypeFilter = this.filterModel.getProperty("/SelectedDnType"),
-				channelFilter = this.filterModel.getProperty("/SelectedSalesChannel"),
-				brandFilter = this.filterModel.getProperty("/SelectedBrand"),
-				createdByFilter = this.filterModel.getProperty("/UserId"),
-				createdFrom = this.filterModel.getProperty("/CreatedFrom").split('.')[1],
-				createdTo = this.filterModel.getProperty("/CreatedTo").split('.')[1],
-				createdFromMonthFilter = createdFrom ? this.addLeftZero(createdFrom, 2) : "undefined",
-				createdToMonthFilter = createdTo ? this.addLeftZero(createdTo, 2) : "undefined",
-				createdFromYearFilter = createdFrom ? this.filterModel.getProperty("/CreatedFrom").split('.')[2] : "undefined",
-				createdToYearFilter = createdTo ? this.filterModel.getProperty("/CreatedTo").split('.')[2] : "undefined",
+			// var dnTypeFilter = this.filterModel.getProperty("/SelectedDnType"),
+			// 	channelFilter = this.filterModel.getProperty("/SelectedSalesChannel"),
+			// 	brandFilter = this.filterModel.getProperty("/SelectedBrand"),
+			// 	createdByFilter = this.filterModel.getProperty("/UserId"),
+			// 	createdFrom = this.filterModel.getProperty("/CreatedFrom").split('.')[1],
+			// 	createdTo = this.filterModel.getProperty("/CreatedTo").split('.')[1],
+			// 	createdFromMonthFilter = createdFrom ? this.addLeftZero(createdFrom, 2) : "undefined",
+			// 	createdToMonthFilter = createdTo ? this.addLeftZero(createdTo, 2) : "undefined",
+			// 	createdFromYearFilter = createdFrom ? this.filterModel.getProperty("/CreatedFrom").split('.')[2] : "undefined",
+			// 	createdToYearFilter = createdTo ? this.filterModel.getProperty("/CreatedTo").split('.')[2] : "undefined",
+			// 	dateValidator = "",
+			var dnTypeFilters = this.filterModel.getProperty("/SelectedDnType"),
+				channelFilters = this.filterModel.getProperty("/SelectedSalesChannel"),
+				brandFilters = this.filterModel.getProperty("/SelectedBrand"),
+				bdgMonthFilters = this.filterModel.getProperty("/SelectedMonth"),
+				bdgYearFilters = this.filterModel.getProperty("/SelectedYear"),
+				createdByFilters = this.filterModel.getProperty("/SelectedUser"),
+				createdFrom = this.filterModel.getProperty("/CreatedFrom") ? this.filterModel.getProperty("/CreatedFrom") : undefined,
+				createdTo = this.filterModel.getProperty("/CreatedTo") ? this.filterModel.getProperty("/CreatedTo") : undefined,
+				createdFromFilter = new Date(formatter.formatDateWithDot(createdFrom)),
+				createdToFilter = new Date(formatter.formatDateWithDot(createdTo)),
+				oTable = this.getView().byId("budgetTableId"),
 				oFilters = [],
 				dateValidator = "",
-				oTable = this.getView().byId("budgetTableId");
+				that = this;
 
-			if (dnTypeFilter) {
-				oFilters.push(new Filter("DnType", FilterOperator.Contains, dnTypeFilter));
-			}
-			if (channelFilter) {
-				oFilters.push(new Filter("SalesDesc", FilterOperator.Contains, channelFilter));
-			}
-			if (brandFilter) {
-				oFilters.push(new Filter("Brand", FilterOperator.Contains, brandFilter));
-			}
-			if (createdByFilter) {
-				oFilters.push(new Filter("UserId", FilterOperator.Contains, createdByFilter));
+			// if (dnTypeFilter) {
+			// 	oFilters.push(new Filter("DnType", FilterOperator.Contains, dnTypeFilter));
+			// }
+			// if (channelFilter) {
+			// 	oFilters.push(new Filter("SalesDesc", FilterOperator.Contains, channelFilter));
+			// }
+			// if (brandFilter) {
+			// 	oFilters.push(new Filter("Brand", FilterOperator.Contains, brandFilter));
+			// }
+			// if (createdByFilter) {
+			// 	oFilters.push(new Filter("UserId", FilterOperator.Contains, createdByFilter));
+			// }
+
+			// if (createdFromMonthFilter !== "undefined" || createdToMonthFilter !== "undefined") {
+			// 	if (createdFromMonthFilter !== "undefined" && createdToMonthFilter !== "undefined") {
+
+			// 		dateValidator = this.validteDatePicker(createdFromMonthFilter, createdFromYearFilter, createdToMonthFilter, createdToYearFilter);
+
+			// 		if (dateValidator) {
+			// 			oFilters.push(new Filter("BdgMonth", FilterOperator.BT, createdFromMonthFilter, createdToMonthFilter));
+			// 			oFilters.push(new Filter("BdgYear", FilterOperator.BT, createdFromYearFilter, createdToYearFilter));
+			// 		} else {
+			// 			MessageToast.show(this.getTextFromResourceBundle("invalidDate"));
+			// 			return;
+			// 		}
+
+			// 	} else {
+			// 		if (createdFromMonthFilter !== "undefined") {
+			// 			oFilters.push(new Filter("BdgMonth", FilterOperator.GE, createdFromMonthFilter));
+			// 			oFilters.push(new Filter("BdgYear", FilterOperator.GE, createdFromYearFilter));
+			// 		} else {
+			// 			oFilters.push(new Filter("BdgMonth", FilterOperator.LE, createdToMonthFilter));
+			// 			oFilters.push(new Filter("BdgYear", FilterOperator.LE, createdToYearFilter));
+			// 		}
+			// 	}
+
+			// }
+
+			if (dnTypeFilters) {
+				dnTypeFilters.forEach(function(dnType) {
+					oFilters.push(new Filter("DnType", FilterOperator.EQ, dnType));
+				});
 			}
 
-			if (createdFromMonthFilter !== "undefined" || createdToMonthFilter !== "undefined") {
-				if (createdFromMonthFilter !== "undefined" && createdToMonthFilter !== "undefined") {
+			if (channelFilters) {
+				channelFilters.forEach(function(channel) {
+					oFilters.push(new Filter("SalesDesc", FilterOperator.EQ, channel));
+				});
+			}
 
-					dateValidator = this.validteDatePicker(createdFromMonthFilter, createdFromYearFilter, createdToMonthFilter, createdToYearFilter);
+			if (brandFilters) {
+				brandFilters.forEach(function(brand) {
+					oFilters.push(new Filter("Brand", FilterOperator.EQ, brand));
+				});
+			}
+
+			if (createdByFilters) {
+				createdByFilters.forEach(function(user) {
+					oFilters.push(new Filter("UserId", FilterOperator.EQ, user));
+				});
+			}
+
+			if (bdgMonthFilters) {
+				bdgMonthFilters.forEach(function(month) {
+					oFilters.push(new Filter("BdgMonth", FilterOperator.EQ, that.addLeftZero(month, 2)));
+				});
+			}
+
+			if (bdgYearFilters) {
+				bdgYearFilters.forEach(function(year) {
+					oFilters.push(new Filter("BdgYear", FilterOperator.EQ, year));
+				});
+			}
+
+			if (createdFrom !== undefined || createdTo !== undefined) {
+				if (createdFrom !== undefined && createdTo !== undefined) {
+					// make sure two dates are not overlapped
+					dateValidator = this.dateNotOverlapped(createdFrom, createdTo);
 
 					if (dateValidator) {
-						oFilters.push(new Filter("BdgMonth", FilterOperator.BT, createdFromMonthFilter, createdToMonthFilter));
-						oFilters.push(new Filter("BdgYear", FilterOperator.BT, createdFromYearFilter, createdToYearFilter));
+						if (createdFrom === createdTo) {
+							oFilters.push(new Filter("CreationDate", FilterOperator.EQ, createdFromFilter));
+						} else {
+							oFilters.push(new Filter("CreationDate", FilterOperator.BT, createdFromFilter, createdToFilter));
+							// oFilters.push(new Filter("CreationDate", FilterOperator.GE, createdFromFilter));
+							// oFilters.push(new Filter("CreationDate", FilterOperator.LE, createdToFilter));
+						}
 					} else {
 						MessageToast.show(this.getTextFromResourceBundle("invalidDate"));
 						return;
 					}
-
 				} else {
-					if (createdFromMonthFilter !== "undefined") {
-						oFilters.push(new Filter("BdgMonth", FilterOperator.GE, createdFromMonthFilter));
-						oFilters.push(new Filter("BdgYear", FilterOperator.GE, createdFromYearFilter));
+					if (createdFrom !== undefined) {
+						oFilters.push(new Filter("CreationDate", FilterOperator.GE, createdFromFilter));
 					} else {
-						oFilters.push(new Filter("BdgMonth", FilterOperator.LE, createdToMonthFilter));
-						oFilters.push(new Filter("BdgYear", FilterOperator.LE, createdToYearFilter));
+						oFilters.push(new Filter("CreationDate", FilterOperator.LE, createdToFilter));
 					}
 				}
-
 			}
-
 			oTable.getBinding("items").filter(oFilters);
 			this._filterFragment.destroy();
 		},

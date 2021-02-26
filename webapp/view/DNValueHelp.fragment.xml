@@ -9,12 +9,16 @@
 					<Column>
 						<Text text="{i18n>ReqType}"/>
 					</Column>
+					<Column>
+						<Text text="{i18n>amount}"/>
+					</Column>
 				</columns>
 				<items>
 					<ColumnListItem type="Navigation" press="onCloseDialog">
 						<cells>
 							<Text text="{createExtModel>ReqId}"/>
 							<Text text="{createExtModel>DnoteType}"/>
+							<Text text="{createExtModel>Amount}"/>
 						</cells>
 					</ColumnListItem>
 			

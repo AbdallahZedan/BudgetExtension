@@ -5,7 +5,7 @@
 			<Page busy="{configurationModel>/busyIndicatorFlag}">
 				<content>
 					<Table id="budgetTableId" visible="{= ${configurationModel>/role} !== 'NotAuthorized' }" noDataText="{i18n>noData}"
-						items="{budgetModel>/results}" >
+						items="{budgetModel>/results}" growing="true">
 						<columns>
 							<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
 								<Text text="{i18n>BdgId}"/>
@@ -45,7 +45,7 @@
 						</columns>
 						<items>
 							<ColumnListItem>
-								<Text id="BdgIdTextId" text="{budgetModel>BdgId}" textAlign="Center" class="sapUiSmallMarginTop"/>
+								<Text id="BdgIdTextId" text="{ path: 'budgetModel>BdgId', formatter: '.formatter.leftShiftZeros' }" textAlign="Center" class="sapUiSmallMarginTop"/>
 								<Text id="compCodeLabelId" text="{budgetModel>CompanyName}" textAlign="Center" class="sapUiSmallMarginTop"/>
 								<Text id="dnTypeLabelId" text="{ path: 'budgetModel>DnType', formatter: '.formatter.captalizeFirstChar' }" textAlign="Center"
 									class="sapUiSmallMarginTop"/>

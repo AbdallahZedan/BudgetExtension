@@ -47,8 +47,25 @@ sap.ui.define([
 
 		// get number after second '/' letter from string 
 		getIndexOfIem: function(oValue) {
-			var index = oValue.split('/')[2];
+			var index = oValue.split("/")[2];
 			return index;
+		},
+
+		getNavigationUrl: function(ReqId) {
+
+			// get a handle on the global XAppNav service
+			var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation"),
+				// generate the Hash to display report for request
+				hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
+					target: {
+						semanticObject: "DNOTE_REP_SEM",
+						action: "lookup"
+					}
+				})) || "";
+			//Generate a  URL for the second application
+			return window.location.href.split("#")[0] + hash + "&/Detail/" + ReqId;
+			// var reportUrl = window.location.href.split("#")[0] + hash + "&/Detail/" + ReqId;
+			// this.extDetailsModel.setProperty("/reportUrl", reportUrl);          
 		},
 
 		// validate array of controls like float, integer and string 
@@ -137,7 +154,38 @@ sap.ui.define([
 			return true;
 
 		},
+		
+		dateNotOverlapped: function(fromDate, toDate) {
 
+			var fromYear = fromDate.split(".")[2],
+				toYear = toDate.split(".")[2],
+				fromMonth = fromDate.split(".")[1],
+				toMonth = toDate.split(".")[1],
+				fromDay = fromDate.split(".")[0],
+				toDay = toDate.split(".")[0];
+
+			if (fromYear > toYear) {
+				return false;
+			} else if (fromYear === toYear) {
+
+				if (fromMonth > toMonth) {
+
+					return false;
+
+				} else if (fromMonth === toMonth) {
+
+					if (fromDay > toDay) {
+						return false;
+					} else {
+						return true;
+					}
+				} else {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		},
 		addLeftZero: function(num, size) {
 
 			var convertdNum = num + "";
@@ -215,8 +263,38 @@ sap.ui.define([
 			this.filterModel.setProperty("/SelectedBrand", "");
 			this.filterModel.setProperty("/CreatedFrom", "");
 			this.filterModel.setProperty("/SelectedSalesChannel", "");
-			this.filterModel.setProperty("/UserId", "");
+			this.filterModel.setProperty("/SelectedUser", "");
+			this.filterModel.setProperty("/SelectedYear", "");
+			this.filterModel.setProperty("/SelectedMonth", "");
+			this.filterModel.setProperty("/CreatedFrom", "");
 			this.filterModel.setProperty("/CreatedTo", "");
+		},
+
+		hasDuplicates: function(oArray) {
+			var valuesSoFar = [];
+			for (var i = 0; i < oArray.length; ++i) {
+				var value = oArray[i].getValue();
+				if (valuesSoFar.indexOf(value) !== -1) {
+					oArray[i].setValueState(sap.ui.core.ValueState.Error);
+				} else {
+					valuesSoFar.push(value);
+				}
+			}
+
+			if (valuesSoFar.length !== oArray.length) {
+				return false;
+			} else {
+				return true;
+			}
+		},
+
+		removeAllErrors: function() {
+			var oTable = this.getView().byId("DNTableId"),
+				oItems = oTable.getAggregation("items");
+
+			oItems.forEach(function(item) {
+				item.getAggregation("cells")[0].setValueState(sap.ui.core.ValueState.None);
+			});
 		}
 
 	});

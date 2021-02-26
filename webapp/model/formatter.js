@@ -30,9 +30,9 @@ sap.ui.define(function() {
 		// round number dependant on currecy 
 		roundAmount: function(amount, currency) {
 
-            if (amount === "" || amount === undefined){
-                return "";
-            }
+			if (amount === "" || amount === undefined) {
+				return "";
+			}
 			switch (currency) {
 				case "SAR":
 				case "USD":
@@ -67,6 +67,15 @@ sap.ui.define(function() {
 
 			if (oDate !== null && oDate !== undefined) {
 				return oDate.substr(6, 2) + "-" + oDate.substr(4, 2) + "-" + oDate.substr(0, 4);
+			} else {
+				return "";
+			}
+		},
+
+		formatDateWithDot: function(oDate) {
+
+			if (oDate !== null && oDate !== undefined) {
+				return oDate.substr(6, 2) + "." + oDate.substr(4, 2) + "." + oDate.substr(0, 4);
 			} else {
 				return "";
 			}
@@ -133,11 +142,20 @@ sap.ui.define(function() {
 			return hours + ":" + minutes;
 		},
 
+		formatDateWithDot: function(oDate) {
+
+			if (oDate !== null && oDate !== undefined) {
+				return oDate.substr(3, 2) + "." + oDate.substr(0, 2) + "." + oDate.substr(6, 4);
+			} else {
+				return "";
+			}
+		},
+
 		// remove left zeros from string
 		leftShiftZeros: function(number) {
 			return parseInt(number);
 		},
-		
+
 		setStateText: function(oStateText) {
 			var state = "Success";
 			switch (oStateText) {
@@ -152,5 +170,6 @@ sap.ui.define(function() {
 			}
 			return state;
 		}
+
 	};
 });

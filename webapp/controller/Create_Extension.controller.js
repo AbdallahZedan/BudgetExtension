@@ -50,11 +50,11 @@ sap.ui.define([
 
 			this.configurationModel.setProperty("/busyIndicatorFlag", true);
 			this.oDataModel.read(bdgAllocPath, {
-				method: 'GET',
+				method: "GET",
 				success: function(data) {
 					that.configurationModel.setProperty("/busyIndicatorFlag", false);
 					that.createExtModel.setData(data);
-					// that.getAllDebitNote();
+					that.getAllDebitNote();
 				},
 				error: function(error) {
 					that.configurationModel.setProperty("/busyIndicatorFlag", false);
@@ -71,18 +71,22 @@ sap.ui.define([
 				that = this;
 
 			oDNFilters.push(new Filter("Status", FilterOperator.EQ, "CREATED"));
-			// oDNFilters.push(new Filter("Brand", FilterOperator.Contains, brand));
+			oDNFilters.push(new Filter("Brand", FilterOperator.Contains,
+				this.createExtModel.getProperty("/Brand")));
 			oDNFilters.push(new Filter("CompCode", FilterOperator.EQ,
 				this.createExtModel.getProperty("/CompanyCode")));
-
+			oDNFilters.push(new Filter("SalesChannel", FilterOperator.EQ, formatter.leftShiftZeros(this.createExtModel.getProperty("/SalesChannel"))));
+			oDNFilters.push(new Filter("DnoteType", FilterOperator.EQ, formatter.captalizeFirstChar(this.createExtModel.getProperty("/DnType"))));
 			this.configurationModel.setProperty("/busyIndicatorFlag", true);
 			this.oDataModel.read(DNOfEvxtPath, {
-				method: 'GET',
+				method: "GET",
 				filters: oDNFilters,
 				success: function(data) {
 					that.configurationModel.setProperty("/busyIndicatorFlag", false);
-					that.createExtModel.setProperty("/DNoteReqests", data.results);
 
+					if (data.results.length !== 0) {
+						that.createExtModel.setProperty("/DNoteReqests", data.results);
+					}
 				},
 				error: function(error) {
 					that.configurationModel.setProperty("/busyIndicatorFlag", false);
@@ -94,6 +98,8 @@ sap.ui.define([
 		onReleaseExt: function(oEvent) {
 
 			var createExtBdg = "/BdgExtensionSet",
+				oTable = this.getView().byId("DNTableId"),
+				oItems = oTable.getAggregation("items"),
 				oExtBudget = {},
 				oRouter = this.getRouter(),
 				bdgId = this.createExtModel.getProperty("/ExtAmount"),
@@ -102,16 +108,20 @@ sap.ui.define([
 				remAmount = this.createExtModel.getProperty("/RemaningBdg"),
 				extAttachmentArr = this.createExtModel.getProperty("/DNoteAttachmentSet"),
 				validatorFlag = false,
-				oValidator = [],
-				oValidatorObj = {
+				oValidArr = [],
+				oValidArrObj = {
 					id: this.getView().byId("extAmountInputlId"),
 					type: "float",
 					max: 16
 				},
 				that = this;
 
-			oValidator.push(oValidatorObj);
-			validatorFlag = this.validator(oValidator);
+			oValidArr.push(oValidArrObj);
+			validatorFlag = this.validator(oValidArr);
+			
+			if (!validatorFlag) {
+				return;
+			}
 
 			oExtBudget.BdgId = this.createExtModel.getProperty("/BdgId");
 			oExtBudget.ExtAmount = formatter.roundAmount(bdgId, currency);
@@ -122,12 +132,20 @@ sap.ui.define([
 			//add attachment
 			oExtBudget.DNoteAttachmentSet = extAttachmentArr;
 
+			//clear array to reuse it
+			oValidArr = [];
+			oItems.forEach(function(item) {
+				oValidArr.push(item.getAggregation("cells")[0]);
+			});
+
 			// add dnote
-			oExtBudget.DNoteOfExtSet = this.validateDnArray(this.DNModel.getProperty("/DNoteReqests"));
+			validatorFlag = this.validateDnArray(oValidArr);
 
 			if (!validatorFlag) {
-				MessageToast.show(this.getTextFromResourceBundle("ExtNotValid"));
 				return;
+			} else {
+				this.removeReportUrl();
+				oExtBudget.DNoteOfExtSet = this.DNModel.getProperty("/DNoteReqests");
 			}
 
 			this.configurationModel.setProperty("/busyIndicatorFlag", true);
@@ -223,23 +241,46 @@ sap.ui.define([
 		validateDnArray: function(oArray) {
 
 			var oExsistedDNotes = this.createExtModel.getProperty("/DNoteReqests"),
-				validArray = [];
+				validArray = [],
+				exsistedReqests = [],
+				errFlag,
+				that = this;
+			//remove previous errors
+			this.removeAllErrors();
 
-			if (oArray === undefined) {
-				return undefined;
+			// return error massage if no debit note selected
+			if (oArray === undefined || oArray.length === 0) {
+				MessageBox.error(this.getTextFromResourceBundle("DNoteErr"));
+				return false;
 			}
-			for (var i = 0; i < oArray.length; i++) {
 
-				for (var j = 0; j < oExsistedDNotes.length; j++) {
+			oExsistedDNotes.forEach(function(item) {
+				exsistedReqests.push(item.ReqId);
+			});
 
-					if (oExsistedDNotes[j].ReqId === oArray[i].ReqId) {
-						validArray.push(oArray[i]);
-					}
+			oArray.forEach(function(item) {
+
+				if (!exsistedReqests.includes(item.getValue())) {
+					errFlag = true;
+					item.setValueState(sap.ui.core.ValueState.Error);
 				}
 
+			});
+
+			// check if flag equal true that dnote request doesn't exsist
+			if (errFlag) {
+				MessageBox.error(this.getTextFromResourceBundle("DNNotEx"));
+				return false;
 			}
 
-			return validArray;
+			// return error if any duplicates in debit note request
+			if (!this.hasDuplicates(oArray)) {
+
+				MessageBox.error(this.getTextFromResourceBundle("DNoteDuplicate"));
+				return false;
+			}
+
+			return true;
 		},
 
 		handleUploadPress: function(oEvent) {
@@ -265,7 +306,7 @@ sap.ui.define([
 			var fileType = file.name.substring(periodIndex + 1, file.name.length);
 			fileType = fileType.toLowerCase();
 			if ($.inArray(fileType, validAttachTypes) > -1) {
-				var BASE64_MARKER = 'data:' + file.type + ';base64,';
+				var BASE64_MARKER = "data:" + file.type + ";base64,";
 				var reader = new FileReader();
 				reader.onload = (function(theFile) {
 					return function(evt) {
@@ -368,6 +409,8 @@ sap.ui.define([
 			var oDNTable = this.getView().byId("DNTableId"),
 				oRows = this.DNModel.getProperty("/DNoteReqests");
 
+			//  remove all previous errors
+			this.removeAllErrors();
 			// check if oRows is undefined so we will create empty array 
 			if (oRows === undefined) {
 				oRows = [];
@@ -389,10 +432,13 @@ sap.ui.define([
 		},
 
 		onRemoveDN: function() {
+
 			var oDNTable = this.getView().byId("DNTableId"),
 				oRows = this.DNModel.getProperty("/DNoteReqests"),
 				oContexts = oDNTable.getSelectedContexts();
 
+			//  remove all previous errors
+			this.removeAllErrors();
 			for (var i = oContexts.length - 1; i >= 0; i--) {
 
 				var oObject = oContexts[i].getObject();
@@ -438,7 +484,8 @@ sap.ui.define([
 
 			var oDNObject = oEvent.getSource().getBindingContext("createExtModel").getObject(),
 				oRows = this.DNModel.getProperty("/DNoteReqests");
-
+			//get url of request to navigate to request details
+			oDNObject.reportUrl = this.getNavigationUrl(oDNObject.ReqId);
 			oRows[this.oSelectedIndex] = oDNObject;
 			this.DNModel.setProperty("/DNoteReqests", oRows);
 
@@ -449,7 +496,39 @@ sap.ui.define([
 		onCancelPressed: function() {
 			this.oSelectedIndex = null;
 			this._DNFragment.destroy();
-		}
+		},
+
+		removeReportUrl: function() {
+				// remove report url property from DN Request 
+				var DNReqArr = this.DNModel.getProperty("/DNoteReqests");
+				DNReqArr.forEach(function(obj) {
+					delete obj.reportUrl;
+				});
+
+				this.DNModel.setProperty("/DNoteReqests", DNReqArr);
+			}
+			// removeDuplicates: function(DNoteArr) {
+
+		// 	var oExsistedDNotes = this.createExtModel.getProperty("/DNoteReqests"),
+		// 		validArray = [];
+
+		// 	if (oExsistedDNotes === undefined || oExsistedDNotes.length === 0) {
+		// 		return validArray;
+		// 	}
+
+		// 	for (var i = 0; i < DNoteArr.length; i++) {
+
+		// 		for (var j = 0; j < oExsistedDNotes.length; j++) {
+
+		// 			if (oExsistedDNotes[j].ReqId === DNoteArr[i].getValue()) {
+		// 				validArray.push(DNoteArr[i]);
+		// 			}
+		// 		}
+
+		// 	}
+
+		// 	return validArray;
+		// }
 
 		// onSearchValueChanged: function() {
 

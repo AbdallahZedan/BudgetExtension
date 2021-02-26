@@ -1,7 +1,7 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="BudgetExtension.controller.Created_Extensions"
 	xmlns:html="http://www.w3.org/1999/xhtml">
 	<Page id="master" class="sapUiResponsivePadding--header" showNavButton="true" navButtonPress="onNavBack">
-		<Table busy="{configurationModel>/busyIndicatorFlag}" id="extensionTableId" class="sapUiResponsiveMargin" noDataText="{i18n>noExtData}"
+		<Table growing="true" busy="{configurationModel>/busyIndicatorFlag}" id="extensionTableId" class="sapUiResponsiveMargin" noDataText="{i18n>noExtData}"
 			width="auto" items="{extensionModel>/results}" visible="{= ${extensionModel>/results} !== undefined }">
 			<columns>
 				<Column width="10%" minScreenWidth="Tablet" demandPopin="true">
